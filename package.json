@@ -8,7 +8,7 @@
   "activationCommands": {
     "atom-workspace": "intentions:toggle"
   },
-  "repository": "git@github.com:steelbrain/intentions.git",
+  "repository": "https://github.com/steelbrain/intentions",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
