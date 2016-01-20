@@ -1,12 +1,9 @@
 {
   "name": "intentions",
-  "main": "./lib/intentions",
+  "main": "./lib/main",
   "version": "0.0.1",
-  "description": "A short description of your package",
+  "description": "Base package for showing intentions in Atom",
   "keywords": [],
-  "activationCommands": {
-    "atom-workspace": "intentions:toggle"
-  },
   "repository": "https://github.com/steelbrain/intentions",
   "license": "MIT",
   "engines": {
