@@ -1,0 +1,6 @@
+{
+  "atom-text-editor": {
+    "esc": "intentions:hide",
+    "alt-enter": "intentions:show"
+  }
+}
