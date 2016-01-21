@@ -39,5 +39,11 @@ describe('Intentions list element', function() {
 
     expect(element.suggestionsIndex).toBe(1)
     expect(element.getActive().title).toBe(rendered.refs.list.children[1].textContent)
+
+    rendered.refs.list.children[1].children[0].dispatchEvent(new MouseEvent('click', {
+      bubbles: true
+    }))
+    expect(suggestions[1].selected).toHaveBeenCalled()
+    expect(dispose).toHaveBeenCalled()
   })
 })
