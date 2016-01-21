@@ -1,4 +1,7 @@
 {
+  "atom-text-editor.platform-darwin:not([mini])": {
+    "ctrl-enter": "intentions:show"
+  },
   "atom-text-editor:not([mini])": {
     "alt-enter": "intentions:show"
   },
