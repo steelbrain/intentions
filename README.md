@@ -1,5 +1,13 @@
-# intentions package
+Intentions
+=========
 
-A short description of your package.
+Intentions is a base package that provides an easy-to-use API to show intentions based in Atom. You can find the API docs in [wiki](https://github.com/steelbrain/intentions/wiki/Provider-API).
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+#### Screenshot
+
+This is how it looks like at the moment. If you are a designer or have a better design in mind, please get in touch
+
+![Intentions screenshot](https://cloud.githubusercontent.com/assets/4278113/12488546/e73809ba-c08d-11e5-8038-dd222f3a815d.png)
+
+#### License
+This package is licensed under the terms of MIT License, see the license file for more info.
