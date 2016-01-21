@@ -5,7 +5,7 @@ Intentions is a base package that provides an easy-to-use API to show intentions
 
 #### Usage
 
-The default keybinding for triggering this package is `alt + enter`. If no intentions are available for the current position, no popup is shown.
+The default keybinding for triggering this package is `alt + enter` (or `ctrl + enter` for OSX). If no intentions are available for the current position, no popup is shown.
 
 #### Screenshot
 
