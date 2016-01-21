@@ -1,6 +1,6 @@
 {
   "name": "intentions",
-  "main": "./lib/main",
+  "main": "./lib/index",
   "version": "0.0.1",
   "description": "Base package for showing intentions in Atom",
   "keywords": [],
@@ -9,5 +9,14 @@
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vanilla-jsx": "^3.0.2"
+  },
+  "consumedServices": {
+    "intentions": {
+      "versions": {
+        "^1.0.0": "consumeIntentions"
+      }
+    }
+  }
 }
