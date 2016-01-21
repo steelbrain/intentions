@@ -1,5 +1,5 @@
 {
-  "atom-text-editor.platform-darwin:not([mini])": {
+  ".platform-darwin atom-text-editor:not([mini])": {
     "ctrl-enter": "intentions:show"
   },
   "atom-text-editor:not([mini])": {

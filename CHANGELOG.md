@@ -1,3 +1,7 @@
+#### 0.1.4
+
+* Another attempt at fixing invalid OSX binding
+
 #### 0.1.3
 
 * Fix keymapping for OSX
