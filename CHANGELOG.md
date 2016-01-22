@@ -1,3 +1,7 @@
+#### 0.1.5
+
+* Fix out-of-bounds suggestionsIndex
+
 #### 0.1.4
 
 * Another attempt at fixing invalid OSX binding
