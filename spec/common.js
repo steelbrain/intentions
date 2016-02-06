@@ -2,14 +2,18 @@
 
 import {processSuggestions} from '../lib/helpers'
 
-export function createSuggestion(text, selected, className = '', icon = '') {
-  return processSuggestions([{
+export function createSuggestion(text, selected, className = '', icon = '', process = true) {
+  const suggestion = {
     priority: 100,
     title: text,
     class: className,
     selected: selected,
     icon: icon
-  }])[0]
+  }
+  if (process) {
+    return processSuggestions([suggestion])[0]
+  }
+  return suggestion
 }
 
 export function triggerKeyboardEvent(element, code) {

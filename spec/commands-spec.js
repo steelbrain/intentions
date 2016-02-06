@@ -122,7 +122,6 @@ describe('Commands', function() {
       e.show = true
       ++showHighlight
     })
-    console.log('hello dolly')
 
     atom.commands.dispatch(editorView, 'intentions:show')
     expect(show).toBe(1)
