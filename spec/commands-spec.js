@@ -244,4 +244,27 @@ describe('Commands', function() {
       })
     })
   })
+  it('ignores enter key when list is active', function() {
+    let show = 0
+    let hide = 0
+    commands.onShouldShow(function(e) {
+      show++
+      e.show = true
+    })
+    commands.onShouldHide(function() {
+      hide++
+    })
+    atom.commands.dispatch(editorView, 'intentions:show')
+    expect(show).toBe(1)
+    expect(hide).toBe(0)
+    triggerKeyboardEvent(editorView, 13)
+    expect(show).toBe(1)
+    expect(hide).toBe(0)
+    triggerKeyboardEvent(editorView, 13)
+    expect(show).toBe(1)
+    expect(hide).toBe(0)
+    triggerKeyboardEvent(editorView, 14)
+    expect(show).toBe(1)
+    expect(hide).toBe(1)
+  })
 })
