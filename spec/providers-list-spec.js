@@ -185,5 +185,66 @@ describe('ProvidersList', function() {
         })
       })
     })
+    it('does not enable it if providers return no results, including non-array ones', function() {
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          return []
+        }
+      })
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          return null
+        }
+      })
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          return false
+        }
+      })
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          return 50
+        }
+      })
+      waitsForPromise(function() {
+        return providersList.trigger(editor).then(function(results) {
+          expect(results).toBe(null)
+        })
+      })
+    })
+    it('emits an error if provider throws an error', function() {
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          throw new Error('test from provider')
+        }
+      })
+      waitsForPromise(function() {
+        return providersList.trigger(editor).then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e.message).toBe('test from provider')
+        })
+      })
+    })
+    it('validates suggestions properly', function() {
+      providersList.addProvider({
+        grammarScopes: ['*'],
+        getIntentions: function() {
+          return [{}]
+        }
+      })
+    })
+    waitsForPromise(function() {
+      return providersList.trigger(editor).then(function() {
+        expect(false).toBe(true)
+      }, function(e) {
+        expect(e instanceof Error).toBe(true)
+      })
+    })
   })
 })
