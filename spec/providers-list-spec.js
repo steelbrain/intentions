@@ -17,6 +17,7 @@ describe('ProvidersList', function() {
         editor = atom.workspace.getActiveTextEditor()
       })
     })
+    atom.packages.activatePackage('language-javascript')
   })
 
   describe('addProvider', function() {
@@ -238,12 +239,34 @@ describe('ProvidersList', function() {
           return [{}]
         }
       })
+      waitsForPromise(function() {
+        return providersList.trigger(editor).then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e instanceof Error).toBe(true)
+        })
+      })
     })
-    waitsForPromise(function() {
-      return providersList.trigger(editor).then(function() {
-        expect(false).toBe(true)
-      }, function(e) {
-        expect(e instanceof Error).toBe(true)
+    it('triggers providers based on scope', function() {
+      let coffeeCalled = false
+      let jsCalled = false
+      providersList.addProvider({
+        grammarScopes: ['source.js'],
+        getIntentions: function() {
+          jsCalled = true
+        }
+      })
+      providersList.addProvider({
+        grammarScopes: ['source.coffee'],
+        getIntentions: function() {
+          coffeeCalled = true
+        }
+      })
+      waitsForPromise(function() {
+        return providersList.trigger(editor).then(function() {
+          expect(jsCalled).toBe(true)
+          expect(coffeeCalled).toBe(false)
+        })
       })
     })
   })
