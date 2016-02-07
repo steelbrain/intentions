@@ -13,9 +13,9 @@
     "vanilla-jsx": "^3.0.2"
   },
   "consumedServices": {
-    "intentions": {
+    "intentions:list": {
       "versions": {
-        "^1.0.0": "consumeIntentions"
+        "^1.0.0": "consumeListIntentions"
       }
     }
   }
