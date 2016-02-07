@@ -183,4 +183,16 @@ describe('Commands', function() {
     expect(showHighlight).toBe(2)
     expect(hide).toBe(5)
   })
+  it('allows retriggering of list show event', function() {
+    let show = 0
+    commands.onShouldShow(function() {
+      show++
+    })
+    atom.commands.dispatch(editorView, 'intentions:show')
+    atom.commands.dispatch(editorView, 'intentions:show')
+    atom.commands.dispatch(editorView, 'intentions:show')
+    atom.commands.dispatch(editorView, 'intentions:show')
+    atom.commands.dispatch(editorView, 'intentions:show')
+    expect(show).toBe(5)
+  })
 })
