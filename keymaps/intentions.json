@@ -8,7 +8,6 @@
     "ctrl": "intentions:highlight"
   },
   "atom-text-editor.intentions-active:not([mini])": {
-    "escape": "intentions:hide",
     "enter": "intentions:confirm"
   }
 }
