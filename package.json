@@ -17,6 +17,11 @@
       "versions": {
         "^1.0.0": "consumeListIntentions"
       }
+    },
+    "intentions:show": {
+      "versions": {
+        "^1.0.0": "consumeShowIntentions"
+      }
     }
   }
 }
