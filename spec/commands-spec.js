@@ -195,4 +195,53 @@ describe('Commands', function() {
     atom.commands.dispatch(editorView, 'intentions:show')
     expect(show).toBe(5)
   })
+  // it('has shouldShow and shouldHighlight accepting promises', function() {
+  it('has shouldShow that accepts a resolving promise', function() {
+    let promise = Promise.resolve(true)
+    commands.onShouldShow(function(e) {
+      e.promise = promise
+    })
+    atom.commands.dispatch(editorView, 'intentions:show')
+    waitsForPromise(function() {
+      return promise.then(function() {
+        expect(commands.active !== null).toBe(true)
+      })
+    })
+  })
+  it('has shouldShow that accepts a rejecting promise', function() {
+    let promise = Promise.resolve(false)
+    commands.onShouldShow(function(e) {
+      e.promise = promise
+    })
+    atom.commands.dispatch(editorView, 'intentions:show')
+    waitsForPromise(function() {
+      return promise.then(function() {
+        expect(commands.active === null).toBe(true)
+      })
+    })
+  })
+  it('has shouldHighlight that accepts a resolving promise', function() {
+    let promise = Promise.resolve(true)
+    commands.onShouldHighlight(function(e) {
+      e.promise = promise
+    })
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    waitsForPromise(function() {
+      return promise.then(function() {
+        expect(commands.active !== null).toBe(true)
+      })
+    })
+  })
+  it('has shouldHighlight that accepts a rejecting promise', function() {
+    let promise = Promise.resolve(false)
+    commands.onShouldHighlight(function(e) {
+      e.promise = promise
+    })
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    waitsForPromise(function() {
+      return promise.then(function() {
+        expect(commands.active === null).toBe(true)
+      })
+    })
+  })
 })
