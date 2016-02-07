@@ -81,4 +81,32 @@ describe('ProvidersList', function() {
       })
     })
   })
+  describe('hasProvider', function() {
+    it('works properly', function() {
+      const provider = {
+        grammarScopes: [],
+        getIntentions: function() {}
+      }
+      expect(providersList.hasProvider(provider)).toBe(false)
+      providersList.addProvider(provider)
+      expect(providersList.hasProvider(provider)).toBe(true)
+    })
+  })
+  describe('deleteProvider', function() {
+    it('works properly', function() {
+      providersList.deleteProvider(true)
+      providersList.deleteProvider(null)
+      providersList.deleteProvider(false)
+      providersList.deleteProvider(50)
+      const provider = {
+        grammarScopes: [],
+        getIntentions: function() {}
+      }
+      expect(providersList.hasProvider(provider)).toBe(false)
+      providersList.addProvider(provider)
+      expect(providersList.hasProvider(provider)).toBe(true)
+      providersList.deleteProvider(provider)
+      expect(providersList.hasProvider(provider)).toBe(false)
+    })
+  })
 })
