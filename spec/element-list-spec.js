@@ -1,6 +1,6 @@
 'use babel'
 
-import ListElement from '../lib/elements/list'
+import {ListElement} from '../lib/elements/list'
 import {createSuggestion} from './common'
 
 describe('Intentions list element', function() {
@@ -11,8 +11,8 @@ describe('Intentions list element', function() {
       createSuggestion('Suggestion 2', jasmine.createSpy('suggestion.selected.1'))
     ]
 
-    let dispose = jasmine.createSpy('suggestion.dispose')
-    let rendered = element.render(suggestions, dispose)
+    let selected = jasmine.createSpy('suggestion.selected')
+    let rendered = element.render(suggestions, selected)
 
     expect(rendered.refs.list.children.length).toBe(2)
     expect(rendered.refs.list.children[0].textContent).toBe('Suggestion 1')
@@ -23,27 +23,26 @@ describe('Intentions list element', function() {
     element.moveDown()
 
     expect(element.suggestionsIndex).toBe(0)
-    expect(element.getActive().title).toBe(rendered.refs.list.children[0].textContent)
+    expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[0].textContent)
 
     element.moveDown()
 
     expect(element.suggestionsIndex).toBe(1)
-    expect(element.getActive().title).toBe(rendered.refs.list.children[1].textContent)
+    expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[1].textContent)
 
     element.moveUp()
 
     expect(element.suggestionsIndex).toBe(0)
-    expect(element.getActive().title).toBe(rendered.refs.list.children[0].textContent)
+    expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[0].textContent)
 
     element.moveUp()
 
     expect(element.suggestionsIndex).toBe(1)
-    expect(element.getActive().title).toBe(rendered.refs.list.children[1].textContent)
+    expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[1].textContent)
 
     rendered.refs.list.children[1].children[0].dispatchEvent(new MouseEvent('click', {
       bubbles: true
     }))
-    expect(suggestions[1].selected).toHaveBeenCalled()
-    expect(dispose).toHaveBeenCalled()
+    expect(selected).toHaveBeenCalledWith(suggestions[1])
   })
 })
