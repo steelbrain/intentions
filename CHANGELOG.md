@@ -1,3 +1,9 @@
+#### 1.0.0
+
+* Improved package stability and performance
+* Rewrote intentions:list providers implementation
+* Implemented intentions:highlight service
+
 #### 0.1.5
 
 * Fix out-of-bounds suggestionsIndex
