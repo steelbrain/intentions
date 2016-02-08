@@ -267,4 +267,31 @@ describe('Commands', function() {
     expect(show).toBe(1)
     expect(hide).toBe(1)
   })
+  it('properly emits should-hide after being activated as highlight', function() {
+    let highlight = 0
+    let hide = 0
+    commands.onShouldHighlight(function(e) {
+      highlight++
+      e.show = true
+    })
+    commands.onShouldHide(function() {
+      hide++
+    })
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    expect(highlight).toBe(1)
+    expect(hide).toBe(0)
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    expect(highlight).toBe(1)
+    expect(hide).toBe(0)
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    expect(highlight).toBe(1)
+    expect(hide).toBe(0)
+    commands.disposeActive()
+    atom.commands.dispatch(editorView, 'intentions:highlight')
+    expect(highlight).toBe(2)
+    expect(hide).toBe(0)
+    triggerKeyboardEvent(editorView, 38, 'keyup')
+    expect(highlight).toBe(2)
+    expect(hide).toBe(1)
+  })
 })
