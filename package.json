@@ -18,9 +18,9 @@
         "^1.0.0": "consumeListIntentions"
       }
     },
-    "intentions:show": {
+    "intentions:highlight": {
       "versions": {
-        "^1.0.0": "consumeShowIntentions"
+        "^1.0.0": "consumeHighlightIntentions"
       }
     }
   }
