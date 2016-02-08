@@ -16,8 +16,8 @@ export function createSuggestion(text, selected, className = '', icon = '', proc
   return suggestion
 }
 
-export function triggerKeyboardEvent(element, code) {
-  const event = new KeyboardEvent('keydown')
+export function triggerKeyboardEvent(element, code, name = 'keydown') {
+  const event = new KeyboardEvent(name)
   Object.defineProperty(event, 'which', {
     get: function() {
       return code
