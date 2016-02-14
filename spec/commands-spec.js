@@ -294,4 +294,21 @@ describe('Commands', function() {
     expect(highlight).toBe(2)
     expect(hide).toBe(1)
   })
+  it('dismisses list on click', function() {
+    let show = 0
+    let hide = 0
+    commands.onShouldShow(function(e) {
+      show++
+      e.show = true
+    })
+    commands.onShouldHide(function() {
+      hide++
+    })
+    atom.commands.dispatch(editorView, 'intentions:show')
+    expect(show).toBe(1)
+    expect(hide).toBe(0)
+    editorView.dispatchEvent(new MouseEvent('mousedown'))
+    expect(show).toBe(1)
+    expect(hide).toBe(1)
+  })
 })
