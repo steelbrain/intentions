@@ -1,6 +1,6 @@
 {
   "name": "intentions",
-  "main": "./lib/index",
+  "main": "./lib/index.js",
   "version": "1.0.0",
   "description": "Base package for showing intentions in Atom",
   "keywords": [],
