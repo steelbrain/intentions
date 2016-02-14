@@ -1,3 +1,7 @@
+#### Upcoming
+
+* Minor UI tweak in menu
+
 #### 1.0.0
 
 * Improved package stability and performance
