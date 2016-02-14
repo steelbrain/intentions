@@ -1,6 +1,7 @@
 #### Upcoming
 
 * Minor UI tweak in menu
+* Dismiss menu on mouse click
 
 #### 1.0.0
 
