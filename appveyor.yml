@@ -16,3 +16,7 @@ install:
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - "%LOCALAPPDATA%/atom/bin/apm test --path %LOCALAPPDATA%/atom/bin/atom.cmd"
+
+branches:
+  only:
+    - master
