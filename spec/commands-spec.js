@@ -2,6 +2,7 @@
 
 import {Commands} from '../lib/commands'
 import {triggerKeyboardEvent} from './common'
+import {waitsForAsync, it} from './common'
 
 describe('Commands', function() {
   let commands
@@ -21,13 +22,13 @@ describe('Commands', function() {
     })
   })
 
-  it('triggers show properly', function() {
+  it('triggers show properly', async function() {
     const listener = jasmine.createSpy('commands::show')
     commands.onShouldShow(listener)
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(listener).toHaveBeenCalled()
   })
-  it('triggers hide after show properly', function() {
+  it('triggers hide after show properly', async function() {
     const listenerShow = jasmine.createSpy('commands::show')
     const listenerHide = jasmine.createSpy('commands::hide')
     commands.onShouldShow(listenerShow)
@@ -35,22 +36,22 @@ describe('Commands', function() {
       e.show = true
     })
     commands.onShouldHide(listenerHide)
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(listenerShow).toHaveBeenCalled()
     expect(listenerHide).not.toHaveBeenCalled()
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(listenerHide).toHaveBeenCalled()
   })
-  it('adds class after show and removes after hide', function() {
+  it('adds class after show and removes after hide', async function() {
     commands.onShouldShow(function(e) {
       e.show = true
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(editorView.classList.contains('intentions-active')).toBe(true)
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(editorView.classList.contains('intentions-active')).toBe(false)
   })
-  it('emits up and down events when its active and not when its inactive', function() {
+  it('emits up and down events when its active and not when its inactive', async function() {
     let up = 0
     let down = 0
     let shown = false
@@ -68,7 +69,7 @@ describe('Commands', function() {
     commands.onShouldHide(function() {
       shown = false
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(shown).toBe(true)
 
     triggerKeyboardEvent(editorView, 38)
@@ -106,7 +107,7 @@ describe('Commands', function() {
     expect(down).toBe(3)
     expect(shown).toBe(false)
   })
-  it('emits shouldHighlight properly', function() {
+  it('emits shouldHighlight properly', async function() {
     let show = 0
     let hide = 0
     let showHighlight = 0
@@ -123,124 +124,108 @@ describe('Commands', function() {
       ++showHighlight
     })
 
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(1)
     expect(showHighlight).toBe(0)
     expect(hide).toBe(0)
 
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(show).toBe(1)
     expect(showHighlight).toBe(0)
     expect(hide).toBe(1)
 
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(2)
     expect(showHighlight).toBe(0)
     expect(hide).toBe(1)
 
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(show).toBe(2)
     expect(showHighlight).toBe(0)
     expect(hide).toBe(1)
 
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(show).toBe(2)
     expect(showHighlight).toBe(0)
     expect(hide).toBe(2)
 
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(show).toBe(2)
     expect(showHighlight).toBe(1)
     expect(hide).toBe(2)
 
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(2)
     expect(showHighlight).toBe(1)
     expect(hide).toBe(2)
 
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(show).toBe(2)
     expect(showHighlight).toBe(1)
     expect(hide).toBe(3)
 
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(3)
     expect(showHighlight).toBe(1)
     expect(hide).toBe(3)
 
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(show).toBe(3)
     expect(showHighlight).toBe(1)
     expect(hide).toBe(4)
 
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(show).toBe(3)
     expect(showHighlight).toBe(2)
     expect(hide).toBe(4)
 
-    atom.commands.dispatch(editorView, 'intentions:hide')
+    await commands.shouldHide()
     expect(show).toBe(3)
     expect(showHighlight).toBe(2)
     expect(hide).toBe(5)
   })
-  it('allows retriggering of list show event', function() {
+  it('allows retriggering of list show event', async function() {
     let show = 0
     commands.onShouldShow(function() {
       show++
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
-    atom.commands.dispatch(editorView, 'intentions:show')
-    atom.commands.dispatch(editorView, 'intentions:show')
-    atom.commands.dispatch(editorView, 'intentions:show')
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
+    await commands.shouldShow()
+    await commands.shouldShow()
+    await commands.shouldShow()
+    await commands.shouldShow()
     expect(show).toBe(5)
   })
   // it('has shouldShow and shouldHighlight accepting promises', function() {
-  it('has shouldShow that accepts a resolving promise', function() {
+  it('has shouldShow that accepts a resolving promise', async function() {
     commands.onShouldShow(function(e) {
       e.show = true
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
-    waitsForPromise(function() {
-      return promise.then(function() {
-        expect(commands.active !== null).toBe(true)
-      })
-    })
+    await commands.shouldShow()
+    expect(commands.active !== null).toBe(true)
   })
-  it('has shouldShow that accepts a rejecting promise', function() {
+  it('has shouldShow that accepts a rejecting promise', async function() {
     commands.onShouldShow(function(e) {
       e.show = false
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
-    waitsForPromise(function() {
-      return promise.then(function() {
-        expect(commands.active === null).toBe(true)
-      })
-    })
+    await commands.shouldShow()
+    expect(commands.active === null).toBe(true)
   })
-  it('has shouldHighlight that accepts a resolving promise', function() {
+  it('has shouldHighlight that accepts a resolving promise', async function() {
     commands.onShouldHighlight(function(e) {
       e.show = true
     })
-    atom.commands.dispatch(editorView, 'intentions:highlight')
-    waitsForPromise(function() {
-      return promise.then(function() {
-        expect(commands.active !== null).toBe(true)
-      })
-    })
+    await commands.shouldHighlight()
+    expect(commands.active !== null).toBe(true)
   })
-  it('has shouldHighlight that accepts a rejecting promise', function() {
+  it('has shouldHighlight that accepts a rejecting promise', async function() {
     commands.onShouldHighlight(function(e) {
       e.show = false
     })
-    atom.commands.dispatch(editorView, 'intentions:highlight')
-    waitsForPromise(function() {
-      return promise.then(function() {
-        expect(commands.active === null).toBe(true)
-      })
-    })
+    await commands.shouldHighlight()
+    expect(commands.active === null).toBe(true)
   })
-  it('ignores enter key when list is active', function() {
+  it('ignores enter key when list is active', async function() {
     let show = 0
     let hide = 0
     commands.onShouldShow(function(e) {
@@ -250,7 +235,7 @@ describe('Commands', function() {
     commands.onShouldHide(function() {
       hide++
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(1)
     expect(hide).toBe(0)
     triggerKeyboardEvent(editorView, 13)
@@ -263,7 +248,7 @@ describe('Commands', function() {
     expect(show).toBe(1)
     expect(hide).toBe(1)
   })
-  fit('properly emits should-hide after being activated as highlight', function() {
+  it('properly emits should-hide after being activated as highlight', async function() {
     let highlight = 0
     let hide = 0
     commands.onShouldHighlight(function(e) {
@@ -273,28 +258,24 @@ describe('Commands', function() {
     commands.onShouldHide(function() {
       hide++
     })
-    console.log(commands.active)
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
-    console.log(commands.active)
-    atom.commands.dispatch(editorView, 'intentions:highlight')
-    console.log(commands.active)
+    await commands.shouldHighlight()
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
-    return
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
     commands.disposeActive()
-    atom.commands.dispatch(editorView, 'intentions:highlight')
+    await commands.shouldHighlight()
     expect(highlight).toBe(2)
     expect(hide).toBe(0)
     triggerKeyboardEvent(editorView, 38, 'keyup')
     expect(highlight).toBe(2)
     expect(hide).toBe(1)
   })
-  it('dismisses list on click', function() {
+  it('dismisses list on click', async function() {
     let show = 0
     let hide = 0
     commands.onShouldShow(function(e) {
@@ -304,7 +285,7 @@ describe('Commands', function() {
     commands.onShouldHide(function() {
       hide++
     })
-    atom.commands.dispatch(editorView, 'intentions:show')
+    await commands.shouldShow()
     expect(show).toBe(1)
     expect(hide).toBe(0)
     editorView.dispatchEvent(new MouseEvent('mousedown'))

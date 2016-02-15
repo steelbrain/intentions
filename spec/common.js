@@ -47,3 +47,14 @@ export function waitsForAsyncRejection(asynCallback, errorMessage) {
     })
   })
 }
+
+export function it(name, callback) {
+  global.it(name, function() {
+    const value = callback()
+    if (value && value.constructor.name === 'Promise') {
+      waitsForPromise(function() {
+        return value
+      })
+    }
+  })
+}
