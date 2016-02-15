@@ -1,4 +1,4 @@
-#### Upcoming
+#### 1.0.2
 
 * Fix compatibility with fonts using ligas
 
