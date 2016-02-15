@@ -1,8 +1,7 @@
 'use babel'
 
 import {Commands} from '../lib/commands'
-import {triggerKeyboardEvent} from './common'
-import {waitsForAsync, it} from './common'
+import {triggerKeyboardEvent, it} from './common'
 
 describe('Commands', function() {
   let commands
