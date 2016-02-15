@@ -263,7 +263,7 @@ describe('Commands', function() {
     expect(show).toBe(1)
     expect(hide).toBe(1)
   })
-  it('properly emits should-hide after being activated as highlight', function() {
+  fit('properly emits should-hide after being activated as highlight', function() {
     let highlight = 0
     let hide = 0
     commands.onShouldHighlight(function(e) {
@@ -273,12 +273,16 @@ describe('Commands', function() {
     commands.onShouldHide(function() {
       hide++
     })
+    console.log(commands.active)
     atom.commands.dispatch(editorView, 'intentions:highlight')
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
+    console.log(commands.active)
     atom.commands.dispatch(editorView, 'intentions:highlight')
+    console.log(commands.active)
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
+    return
     atom.commands.dispatch(editorView, 'intentions:highlight')
     expect(highlight).toBe(1)
     expect(hide).toBe(0)
