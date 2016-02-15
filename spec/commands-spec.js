@@ -197,9 +197,8 @@ describe('Commands', function() {
   })
   // it('has shouldShow and shouldHighlight accepting promises', function() {
   it('has shouldShow that accepts a resolving promise', function() {
-    let promise = Promise.resolve(true)
     commands.onShouldShow(function(e) {
-      e.promise = promise
+      e.show = true
     })
     atom.commands.dispatch(editorView, 'intentions:show')
     waitsForPromise(function() {
@@ -209,9 +208,8 @@ describe('Commands', function() {
     })
   })
   it('has shouldShow that accepts a rejecting promise', function() {
-    let promise = Promise.resolve(false)
     commands.onShouldShow(function(e) {
-      e.promise = promise
+      e.show = false
     })
     atom.commands.dispatch(editorView, 'intentions:show')
     waitsForPromise(function() {
@@ -221,9 +219,8 @@ describe('Commands', function() {
     })
   })
   it('has shouldHighlight that accepts a resolving promise', function() {
-    let promise = Promise.resolve(true)
     commands.onShouldHighlight(function(e) {
-      e.promise = promise
+      e.show = true
     })
     atom.commands.dispatch(editorView, 'intentions:highlight')
     waitsForPromise(function() {
@@ -233,9 +230,8 @@ describe('Commands', function() {
     })
   })
   it('has shouldHighlight that accepts a rejecting promise', function() {
-    let promise = Promise.resolve(false)
     commands.onShouldHighlight(function(e) {
-      e.promise = promise
+      e.show = false
     })
     atom.commands.dispatch(editorView, 'intentions:highlight')
     waitsForPromise(function() {
