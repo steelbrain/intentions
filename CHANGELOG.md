@@ -1,3 +1,7 @@
+#### 1.0.3
+
+* Automatically update higlight decoration lengths instead of making API consumers do that
+
 #### 1.0.2
 
 * Fix compatibility with fonts using ligas
