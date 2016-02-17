@@ -258,4 +258,33 @@ describe('ProvidersHighlight', function() {
       })
     })
   })
+
+  it('automatically updates length of decoration everytime coordinates update', function() {
+    let element
+    let jsCalled = false
+    const range = [[2, 0], [2, 5]]
+    providersHighlight.addProvider({
+      grammarScopes: ['source.js'],
+      getIntentions: function() {
+        jsCalled = true
+        return [{
+          range,
+          created: function({element: _element}) {
+            element = _element
+          }
+        }]
+      }
+    })
+    waitsForPromise(function() {
+      return providersHighlight.trigger(editor).then(function(intentions) {
+        expect(jsCalled).toBe(true)
+        expect(element).not.toBeDefined()
+        providersHighlight.paint(editor, intentions)
+        expect(element).toBeDefined()
+        expect(element.textContent.length).toBe(5)
+        editor.setTextInBufferRange(range, 'something')
+        expect(element.textContent.length).toBe(9)
+      })
+    })
+  })
 })
