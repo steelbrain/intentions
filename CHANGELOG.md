@@ -1,3 +1,7 @@
+#### 1.0.5
+
+* Change OSX keybinding from `cmd` to `alt` again to match IntelliJ IDEs
+
 #### 1.0.4
 
 * Change OSX keybinding from `alt` to `cmd`
