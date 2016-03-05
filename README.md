@@ -6,7 +6,7 @@ Intentions is a base package that provides an easy-to-use API to show intentions
 #### Usage
 
 The default keybinding on OSX to trigger list is `ctrl` + `enter`. If you want to trigger intentions highlights,
-press `cmd` or `alt`.
+press `cmd`.
 
 The default keybinding on Windows and Linux to trigger list is `alt` + `enter`. If you want to trigger intentions
 highlights press `ctrl`.
