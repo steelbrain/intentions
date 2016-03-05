@@ -1,3 +1,7 @@
+#### 1.0.4
+
+* Change OSX keybinding from `alt` to `cmd`
+
 #### 1.0.3
 
 * Automatically update higlight decoration lengths instead of making API consumers do that
