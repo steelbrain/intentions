@@ -10,7 +10,7 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
-    "sb-event-kit": "^1.1.1",
+    "sb-event-kit": "^2.0.0",
     "vanilla-jsx": "^3.0.2"
   },
   "consumedServices": {
