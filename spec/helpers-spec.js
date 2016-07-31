@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import * as Helpers from '../lib/helpers'
 import {createSuggestion} from './common'

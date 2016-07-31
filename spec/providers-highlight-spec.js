@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import {ProvidersHighlight} from '../lib/providers-highlight'
 

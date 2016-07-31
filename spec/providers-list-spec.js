@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import {ProvidersList} from '../lib/providers-list'
 

@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import {Commands} from '../lib/commands'
 import {triggerKeyboardEvent, it} from './common'

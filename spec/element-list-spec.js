@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import {ListElement} from '../lib/elements/list'
 import {createSuggestion} from './common'
