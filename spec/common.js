@@ -1,14 +1,14 @@
 /* @flow */
 
-import {processSuggestions} from '../lib/helpers'
+import { processSuggestions } from '../lib/helpers'
 
 export function createSuggestion(text, selected, className = '', icon = '', process = true) {
   const suggestion = {
-    priority: 100,
+    icon,
     title: text,
     class: className,
-    selected: selected,
-    icon: icon
+    priority: 100,
+    selected,
   }
   if (process) {
     return processSuggestions([suggestion])[0]
@@ -19,9 +19,7 @@ export function createSuggestion(text, selected, className = '', icon = '', proc
 export function triggerKeyboardEvent(element, code, name = 'keydown') {
   const event = new KeyboardEvent(name)
   Object.defineProperty(event, 'which', {
-    get: function() {
-      return code
-    }
+    value: code,
   })
   element.dispatchEvent(event)
 }

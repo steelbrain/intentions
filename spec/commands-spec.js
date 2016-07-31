@@ -1,7 +1,7 @@
 /* @flow */
 
-import {Commands} from '../lib/commands'
-import {triggerKeyboardEvent, it} from './common'
+import Commands from '../lib/commands'
+import { triggerKeyboardEvent, it } from './common'
 
 describe('Commands', function() {
   let commands

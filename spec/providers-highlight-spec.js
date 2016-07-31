@@ -1,6 +1,6 @@
 /* @flow */
 
-import {ProvidersHighlight} from '../lib/providers-highlight'
+import ProvidersHighlight from '../lib/providers-highlight'
 
 describe('ProvidersHighlight', function() {
   let providersHighlight
@@ -40,52 +40,52 @@ describe('ProvidersHighlight', function() {
 
       expect(function() {
         providersHighlight.addProvider({
-          grammarScopes: false
+          grammarScopes: false,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
-          grammarScopes: null
+          grammarScopes: null,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
-          grammarScopes: true
+          grammarScopes: true,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
-          grammarScopes: 5
+          grammarScopes: 5,
         })
       }).toThrow()
 
       expect(function() {
         providersHighlight.addProvider({
           grammarScopes: [],
-          getIntentions: false
+          getIntentions: false,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
           grammarScopes: [],
-          getIntentions: null
+          getIntentions: null,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
           grammarScopes: [],
-          getIntentions: true
+          getIntentions: true,
         })
       }).toThrow()
       expect(function() {
         providersHighlight.addProvider({
           grammarScopes: [],
-          getIntentions: 20
+          getIntentions: 20,
         })
       }).toThrow()
       providersHighlight.addProvider({
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {},
       })
     })
   })
@@ -93,7 +93,7 @@ describe('ProvidersHighlight', function() {
     it('works properly', function() {
       const provider = {
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {},
       }
       expect(providersHighlight.hasProvider(provider)).toBe(false)
       providersHighlight.addProvider(provider)
@@ -108,7 +108,7 @@ describe('ProvidersHighlight', function() {
       providersHighlight.deleteProvider(50)
       const provider = {
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {},
       }
       expect(providersHighlight.hasProvider(provider)).toBe(false)
       providersHighlight.addProvider(provider)
@@ -119,16 +119,16 @@ describe('ProvidersHighlight', function() {
   })
   describe('trigger', function() {
     it('works properly', function() {
-      const intention  = {
+      const intention = {
         range: [[0, 1], [1, Infinity]],
         class: 'something',
-        created: function() {}
+        created() {},
       }
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return [intention]
-        }
+        },
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function(results) {
@@ -140,22 +140,23 @@ describe('ProvidersHighlight', function() {
     })
     it('ignores previous result from executed twice instantly', function() {
       let count = 0
-      const intentionFirst  = {
+      const intentionFirst = {
         range: [[0, 1], [1, Infinity]],
         class: 'something',
-        created: function() {}
+        created() {},
       }
-      const intentionSecond  = {
+      const intentionSecond = {
         range: [[0, 1], [1, Infinity]],
-        created: function() {}
+        created() {},
       }
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           if (++count === 1) {
             return [intentionFirst]
-          } else return [intentionSecond]
-        }
+          }
+          return [intentionSecond]
+        },
       })
       const promiseFirst = providersHighlight.trigger(editor)
       const promiseSecond = providersHighlight.trigger(editor)
@@ -176,27 +177,27 @@ describe('ProvidersHighlight', function() {
     it('does not enable it if providers return no results, including non-array ones', function() {
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return []
-        }
+        },
       })
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return null
-        }
+        },
       })
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return false
-        }
+        },
       })
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return 50
-        }
+        },
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function(results) {
@@ -207,9 +208,9 @@ describe('ProvidersHighlight', function() {
     it('emits an error if provider throws an error', function() {
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           throw new Error('test from provider')
-        }
+        },
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function() {
@@ -222,9 +223,9 @@ describe('ProvidersHighlight', function() {
     it('validates suggestions properly', function() {
       providersHighlight.addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return [{}]
-        }
+        },
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function() {
@@ -239,16 +240,15 @@ describe('ProvidersHighlight', function() {
       let jsCalled = false
       providersHighlight.addProvider({
         grammarScopes: ['source.js'],
-        getIntentions: function() {
-          console.log(arguments)
+        getIntentions() {
           jsCalled = true
-        }
+        },
       })
       providersHighlight.addProvider({
         grammarScopes: ['source.coffee'],
-        getIntentions: function() {
+        getIntentions() {
           coffeeCalled = true
-        }
+        },
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function() {
@@ -265,15 +265,15 @@ describe('ProvidersHighlight', function() {
     const range = [[2, 0], [2, 5]]
     providersHighlight.addProvider({
       grammarScopes: ['source.js'],
-      getIntentions: function() {
+      getIntentions() {
         jsCalled = true
         return [{
           range,
-          created: function({element: _element}) {
+          created({ element: _element }) {
             element = _element
-          }
+          },
         }]
-      }
+      },
     })
     waitsForPromise(function() {
       return providersHighlight.trigger(editor).then(function(intentions) {

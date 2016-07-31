@@ -1,7 +1,6 @@
 /* @flow */
 
 import * as Helpers from '../lib/helpers'
-import {createSuggestion} from './common'
 
 describe('Helpers', function() {
   describe('processSuggestions', function() {
@@ -11,15 +10,15 @@ describe('Helpers', function() {
           priority: 100,
           title: 'title 1',
           class: 'class1',
-          selected: function() {},
-          icon: 'icon1'
+          selected() {},
+          icon: 'icon1',
         },
         {
           priority: 200,
           title: 'title 2',
           class: 'class2',
-          selected: function() {}
-        }
+          selected() {},
+        },
       ]
       suggestions = Helpers.processSuggestions(suggestions)
       expect(suggestions[0].priority).toBe(200)
@@ -71,7 +70,7 @@ describe('Helpers', function() {
     it('works', function() {
       const e = {
         preventDefault: jasmine.createSpy('preventDefault'),
-        stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation')
+        stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
       }
       Helpers.preventDefault(e)
       expect(e.preventDefault).toHaveBeenCalled()
