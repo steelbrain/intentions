@@ -135,7 +135,7 @@ describe('ProvidersHighlight', function() {
         class: 'something',
         created() {},
       }
-      providersHighlight.addProvider({
+      addProvider({
         grammarScopes: ['*'],
         getIntentions() {
           return [intention]
@@ -159,7 +159,7 @@ describe('ProvidersHighlight', function() {
         range: [[0, 1], [1, Infinity]],
         created() {},
       }
-      providersHighlight.addProvider({
+      addProvider({
         grammarScopes: ['*'],
         getIntentions() {
           if (++count === 1) {
@@ -278,7 +278,7 @@ describe('ProvidersHighlight', function() {
     let element
     let jsCalled = false
     const range = [[2, 0], [2, 5]]
-    providersHighlight.addProvider({
+    addProvider({
       grammarScopes: ['source.js'],
       getIntentions() {
         jsCalled = true

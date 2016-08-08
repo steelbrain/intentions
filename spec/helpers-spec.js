@@ -3,9 +3,9 @@
 import * as Helpers from '../lib/helpers'
 
 describe('Helpers', function() {
-  describe('processSuggestions', function() {
+  describe('processListItems', function() {
     it('works', function() {
-      let suggestions = [
+      let suggestions: Array<Object> = [
         {
           priority: 100,
           title: 'title 1',
@@ -20,11 +20,11 @@ describe('Helpers', function() {
           selected() {},
         },
       ]
-      suggestions = Helpers.processSuggestions(suggestions)
+      suggestions = Helpers.processListItems(suggestions)
       expect(suggestions[0].priority).toBe(200)
-      expect(suggestions[0].class).toBe('class2')
+      expect(suggestions[0][Helpers.$class]).toBe('class2')
       expect(suggestions[1].priority).toBe(100)
-      expect(suggestions[1].class).toBe('class1 icon icon-icon1')
+      expect(suggestions[1][Helpers.$class]).toBe('class1 icon icon-icon1')
     })
   })
   describe('showError', function() {

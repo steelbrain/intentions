@@ -1,6 +1,6 @@
 'use babel'
 
-import { processSuggestions } from '../lib/helpers'
+import { processListItems } from '../lib/helpers'
 
 export function createSuggestion(text, selected, className = '', icon = '', process = true) {
   const suggestion = {
@@ -11,7 +11,7 @@ export function createSuggestion(text, selected, className = '', icon = '', proc
     selected,
   }
   if (process) {
-    return processSuggestions([suggestion])[0]
+    return processListItems([suggestion])[0]
   }
   return suggestion
 }
