@@ -1,4 +1,4 @@
-/* @flow */
+'use babel'
 
 import { processSuggestions } from '../lib/helpers'
 

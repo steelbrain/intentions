@@ -1,7 +1,8 @@
 /* @flow */
 
+import { it } from 'jasmine-fix'
 import Commands from '../lib/commands'
-import { triggerKeyboardEvent, it } from './common'
+import { triggerKeyboardEvent } from './common'
 
 describe('Commands', function() {
   let commands

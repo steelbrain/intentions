@@ -68,7 +68,8 @@ describe('Helpers', function() {
   })
   describe('preventDefault', function() {
     it('works', function() {
-      const e = {
+      // $FlowIgnore: Shut up, It's an event :P
+      const e: Event = {
         preventDefault: jasmine.createSpy('preventDefault'),
         stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
       }
