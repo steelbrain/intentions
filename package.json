@@ -10,6 +10,7 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
+    "jasmine-fix": "^1.0.1",
     "sb-event-kit": "^2.0.0",
     "vanilla-jsx": "^3.0.2"
   },

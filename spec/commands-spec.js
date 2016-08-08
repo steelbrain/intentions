@@ -1,6 +1,6 @@
 /* @flow */
 
-import { it } from 'jasmine-fix'
+import { it, beforeEach } from 'jasmine-fix'
 import Commands from '../lib/commands'
 import { triggerKeyboardEvent } from './common'
 
@@ -8,18 +8,15 @@ describe('Commands', function() {
   let commands
   let editorView
 
-  beforeEach(function() {
+  beforeEach(async function() {
     if (commands) {
       commands.dispose()
     }
     commands = new Commands()
     commands.activate()
     atom.workspace.destroyActivePane()
-    waitsForPromise(function() {
-      return atom.workspace.open(__filename).then(function() {
-        editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
-      })
-    })
+    await atom.workspace.open(__filename)
+    editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
   })
 
   it('triggers show properly', async function() {
