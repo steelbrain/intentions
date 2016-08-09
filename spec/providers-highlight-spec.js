@@ -173,7 +173,7 @@ describe('ProvidersHighlight', function() {
 
       waitsForPromise(function() {
         return promiseFirst.then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
       waitsForPromise(function() {
@@ -216,7 +216,7 @@ describe('ProvidersHighlight', function() {
       })
       waitsForPromise(function() {
         return providersHighlight.trigger(editor).then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
     })

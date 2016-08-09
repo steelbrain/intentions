@@ -186,7 +186,7 @@ describe('ProvidersList', function() {
 
       waitsForPromise(function() {
         return promiseFirst.then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
       waitsForPromise(function() {
@@ -223,7 +223,7 @@ describe('ProvidersList', function() {
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
     })

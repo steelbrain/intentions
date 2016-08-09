@@ -20,22 +20,22 @@ describe('Intentions list element', function() {
     expect(rendered.refs.list.children[0].children[0].className).toBe('someClass icon icon-someIcon')
     expect(element.suggestionsIndex).toBe(-1)
 
-    element.moveDown()
+    element.move('down')
 
     expect(element.suggestionsIndex).toBe(0)
     expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[0].textContent)
 
-    element.moveDown()
+    element.move('down')
 
     expect(element.suggestionsIndex).toBe(1)
     expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[1].textContent)
 
-    element.moveUp()
+    element.move('up')
 
     expect(element.suggestionsIndex).toBe(0)
     expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[0].textContent)
 
-    element.moveUp()
+    element.move('up')
 
     expect(element.suggestionsIndex).toBe(1)
     expect(element.suggestions[element.suggestionsIndex].title).toBe(rendered.refs.list.children[1].textContent)
