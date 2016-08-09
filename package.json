@@ -10,8 +10,13 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
+    "disposable-event": "^1.0.1",
     "sb-event-kit": "^2.0.0",
     "vanilla-jsx": "^3.0.2"
+  },
+  "devDependencies": {
+    "eslint-config-steelbrain": "^1.0.4",
+    "jasmine-fix": "^1.0.1"
   },
   "consumedServices": {
     "intentions:list": {
@@ -24,5 +29,9 @@
         "^1.0.0": "consumeHighlightIntentions"
       }
     }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "apm test"
   }
 }

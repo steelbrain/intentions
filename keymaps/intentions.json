@@ -7,7 +7,7 @@
     "alt-enter": "intentions:show",
     "ctrl": "intentions:highlight"
   },
-  "atom-text-editor.intentions-active:not([mini])": {
+  "atom-text-editor.intentions-list:not([mini])": {
     "enter": "intentions:confirm"
   }
 }

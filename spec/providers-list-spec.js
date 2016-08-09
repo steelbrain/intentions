@@ -1,6 +1,7 @@
-'use babel'
+/* @flow */
 
-import {ProvidersList} from '../lib/providers-list'
+import invariant from 'assert'
+import ProvidersList from '../lib/providers-list'
 
 describe('ProvidersList', function() {
   let providersList
@@ -19,73 +20,79 @@ describe('ProvidersList', function() {
     })
     atom.packages.activatePackage('language-javascript')
   })
+  function addProvider(provider: any) {
+    return providersList.addProvider(provider)
+  }
+  function deleteProvider(provider: any) {
+    providersList.deleteProvider(provider)
+  }
 
   describe('addProvider', function() {
     it('validates parameters properly', function() {
       expect(function() {
-        providersList.addProvider()
+        addProvider()
       }).toThrow()
       expect(function() {
-        providersList.addProvider(null)
+        addProvider(null)
       }).toThrow()
       expect(function() {
-        providersList.addProvider(1)
+        addProvider(1)
       }).toThrow()
       expect(function() {
-        providersList.addProvider(false)
+        addProvider(false)
       }).toThrow()
       expect(function() {
-        providersList.addProvider(true)
+        addProvider(true)
       }).toThrow()
 
       expect(function() {
-        providersList.addProvider({
-          grammarScopes: false
+        addProvider({
+          grammarScopes: false,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
-          grammarScopes: null
+        addProvider({
+          grammarScopes: null,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
-          grammarScopes: true
+        addProvider({
+          grammarScopes: true,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
-          grammarScopes: 5
+        addProvider({
+          grammarScopes: 5,
         })
       }).toThrow()
 
       expect(function() {
-        providersList.addProvider({
+        addProvider({
           grammarScopes: [],
-          getIntentions: false
+          getIntentions: false,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
+        addProvider({
           grammarScopes: [],
-          getIntentions: null
+          getIntentions: null,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
+        addProvider({
           grammarScopes: [],
-          getIntentions: true
+          getIntentions: true,
         })
       }).toThrow()
       expect(function() {
-        providersList.addProvider({
+        addProvider({
           grammarScopes: [],
-          getIntentions: 20
+          getIntentions: 20,
         })
       }).toThrow()
-      providersList.addProvider({
+      addProvider({
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {},
       })
     })
   })
@@ -93,25 +100,29 @@ describe('ProvidersList', function() {
     it('works properly', function() {
       const provider = {
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {
+          throw new Error()
+        },
       }
       expect(providersList.hasProvider(provider)).toBe(false)
-      providersList.addProvider(provider)
+      addProvider(provider)
       expect(providersList.hasProvider(provider)).toBe(true)
     })
   })
   describe('deleteProvider', function() {
     it('works properly', function() {
-      providersList.deleteProvider(true)
-      providersList.deleteProvider(null)
-      providersList.deleteProvider(false)
-      providersList.deleteProvider(50)
+      deleteProvider(true)
+      deleteProvider(null)
+      deleteProvider(false)
+      deleteProvider(50)
       const provider = {
         grammarScopes: [],
-        getIntentions: function() {}
+        getIntentions() {
+          throw new Error()
+        },
       }
       expect(providersList.hasProvider(provider)).toBe(false)
-      providersList.addProvider(provider)
+      addProvider(provider)
       expect(providersList.hasProvider(provider)).toBe(true)
       providersList.deleteProvider(provider)
       expect(providersList.hasProvider(provider)).toBe(false)
@@ -119,110 +130,109 @@ describe('ProvidersList', function() {
   })
   describe('trigger', function() {
     it('works properly', function() {
-      const intention  = {
+      const intention = {
         priority: 100,
         icon: 'bucket',
         class: 'custom-icon-class',
         title: 'Choose color from colorpicker',
-        selected: function() {
+        selected() {
           console.log('You clicked the color picker option')
-        }
+        },
       }
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return [intention]
-        }
+        },
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function(results) {
-          expect(results).not.toBe(null)
-          expect(results instanceof Array).toBe(true)
+          invariant(Array.isArray(results))
           expect(results[0]).toBe(intention)
         })
       })
     })
     it('ignores previous result from executed twice instantly', function() {
       let count = 0
-      const intentionFirst  = {
+      const intentionFirst = {
         priority: 100,
         icon: 'bucket',
         class: 'custom-icon-class',
         title: 'Choose color from colorpicker',
-        selected: function() {
+        selected() {
           console.log('You clicked the color picker option')
-        }
+        },
       }
-      const intentionSecond  = {
+      const intentionSecond = {
         priority: 100,
         icon: 'bucket',
         class: 'custom-icon-class',
         title: 'Choose color from colorpicker',
-        selected: function() {
+        selected() {
           console.log('You clicked the color picker option')
-        }
+        },
       }
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           if (++count === 1) {
             return [intentionFirst]
-          } else return [intentionSecond]
-        }
+          }
+          return [intentionSecond]
+        },
       })
       const promiseFirst = providersList.trigger(editor)
       const promiseSecond = providersList.trigger(editor)
 
       waitsForPromise(function() {
         return promiseFirst.then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
       waitsForPromise(function() {
         return promiseSecond.then(function(results) {
-          expect(results).not.toBe(null)
-          expect(results instanceof Array).toBe(true)
+          invariant(Array.isArray(results))
           expect(results[0]).toBe(intentionSecond)
         })
       })
     })
     it('does not enable it if providers return no results, including non-array ones', function() {
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return []
-        }
+        },
       })
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return null
-        }
+        },
       })
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return false
-        }
+        },
       })
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return 50
-        }
+        },
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function(results) {
-          expect(results).toBe(null)
+          expect(results).toEqual([])
         })
       })
     })
     it('emits an error if provider throws an error', function() {
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           throw new Error('test from provider')
-        }
+        },
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function() {
@@ -233,11 +243,11 @@ describe('ProvidersList', function() {
       })
     })
     it('validates suggestions properly', function() {
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['*'],
-        getIntentions: function() {
+        getIntentions() {
           return [{}]
-        }
+        },
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function() {
@@ -250,17 +260,17 @@ describe('ProvidersList', function() {
     it('triggers providers based on scope', function() {
       let coffeeCalled = false
       let jsCalled = false
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['source.js'],
-        getIntentions: function() {
+        getIntentions() {
           jsCalled = true
-        }
+        },
       })
-      providersList.addProvider({
+      addProvider({
         grammarScopes: ['source.coffee'],
-        getIntentions: function() {
+        getIntentions() {
           coffeeCalled = true
-        }
+        },
       })
       waitsForPromise(function() {
         return providersList.trigger(editor).then(function() {

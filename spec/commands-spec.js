@@ -1,294 +1,449 @@
-'use babel'
+/* @flow */
 
-import {Commands} from '../lib/commands'
-import {triggerKeyboardEvent, it} from './common'
+import { CompositeDisposable, Disposable } from 'sb-event-kit'
+import { it, beforeEach, wait } from 'jasmine-fix'
+import Commands from '../lib/commands'
+import { getKeyboardEvent } from './helpers'
 
 describe('Commands', function() {
   let commands
   let editorView
 
-  beforeEach(function() {
-    if (commands) {
-      commands.dispose()
-    }
+  beforeEach(async function() {
     commands = new Commands()
     commands.activate()
+    await atom.workspace.open(__filename)
+    editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
+  })
+  afterEach(function() {
     atom.workspace.destroyActivePane()
-    waitsForPromise(function() {
-      return atom.workspace.open(__filename).then(function() {
-        editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
+    commands.dispose()
+  })
+
+  describe('Highlights', function() {
+    it('does nothing if not activated and we try to deactivate', function() {
+      commands.processHighlightsHide()
+    })
+    it('does not activate unless provider tells it to', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onHighlightsShow(function() {
+        timesShow++
+        return Promise.resolve(false)
+      })
+      commands.onHighlightsHide(function() {
+        timesHide++
+      })
+      await commands.processHighlightsShow()
+      commands.processHighlightsHide()
+
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(0)
+    })
+    it('activates when the provider tells it to', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onHighlightsShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onHighlightsHide(function() {
+        timesHide++
+      })
+      await commands.processHighlightsShow()
+      commands.processHighlightsHide()
+
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
+    })
+    it('ignores if already highlighted', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onHighlightsShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onHighlightsHide(function() {
+        timesHide++
+      })
+      await commands.processHighlightsShow()
+      await commands.processHighlightsShow()
+      await commands.processHighlightsShow()
+      commands.processHighlightsHide()
+      commands.processHighlightsHide()
+      commands.processHighlightsHide()
+
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
+    })
+    it('disposes list if available', async function() {
+      let disposed = false
+      const active = { type: 'list', subscriptions: new CompositeDisposable() }
+      active.subscriptions.add(new Disposable(function() {
+        disposed = true
+      }))
+      commands.active = active
+      expect(disposed).toBe(false)
+      await commands.processHighlightsShow()
+      expect(disposed).toBe(true)
+    })
+    it('adds and removes classes appropriately', async function() {
+      commands.onHighlightsShow(function() {
+        return Promise.resolve(true)
+      })
+      expect(editorView.classList.contains('intentions-highlights')).toBe(false)
+      await commands.processHighlightsShow()
+      expect(editorView.classList.contains('intentions-highlights')).toBe(true)
+      commands.processHighlightsHide()
+      expect(editorView.classList.contains('intentions-highlights')).toBe(false)
+    })
+    describe('command listener', function() {
+      it('just activates if theres no keyboard event attached', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onHighlightsShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onHighlightsHide(function() {
+          timesHide++
+        })
+        expect(timesShow).toBe(0)
+        expect(timesHide).toBe(0)
+        atom.commands.dispatch(editorView, 'intentions:highlight')
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        commands.processHighlightsHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
+      it('just activates if keyboard event is not keydown', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onHighlightsShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onHighlightsHide(function() {
+          timesHide++
+        })
+        expect(timesShow).toBe(0)
+        expect(timesHide).toBe(0)
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        commands.processHighlightsHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
+      it('does not deactivate if keyup is not same keycode', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onHighlightsShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onHighlightsHide(function() {
+          timesHide++
+        })
+        expect(timesShow).toBe(0)
+        expect(timesHide).toBe(0)
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keydown'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup', 1))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        commands.processHighlightsHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
+      it('does deactivate if keyup is the same keycode', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onHighlightsShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onHighlightsHide(function() {
+          timesHide++
+        })
+        expect(timesShow).toBe(0)
+        expect(timesHide).toBe(0)
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keydown'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+        commands.processHighlightsHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
       })
     })
   })
-
-  it('triggers show properly', async function() {
-    const listener = jasmine.createSpy('commands::show')
-    commands.onShouldShow(listener)
-    await commands.shouldShow()
-    expect(listener).toHaveBeenCalled()
-  })
-  it('triggers hide after show properly', async function() {
-    const listenerShow = jasmine.createSpy('commands::show')
-    const listenerHide = jasmine.createSpy('commands::hide')
-    commands.onShouldShow(listenerShow)
-    commands.onShouldShow(function(e) {
-      e.show = true
+  describe('Lists', function() {
+    it('does nothing if deactivated and we try to activate it', function() {
+      commands.processListHide()
     })
-    commands.onShouldHide(listenerHide)
-    await commands.shouldShow()
-    expect(listenerShow).toHaveBeenCalled()
-    expect(listenerHide).not.toHaveBeenCalled()
-    await commands.shouldHide()
-    expect(listenerHide).toHaveBeenCalled()
-  })
-  it('adds class after show and removes after hide', async function() {
-    commands.onShouldShow(function(e) {
-      e.show = true
+    it('does not pass on move events if not activated', function() {
+      const callback = jasmine.createSpy('commands:list-move')
+      commands.onListMove(callback)
+      commands.processListMove('up')
+      commands.processListMove('down')
+      commands.processListMove('down')
+      expect(callback).not.toHaveBeenCalled()
     })
-    await commands.shouldShow()
-    expect(editorView.classList.contains('intentions-active')).toBe(true)
-    await commands.shouldHide()
-    expect(editorView.classList.contains('intentions-active')).toBe(false)
-  })
-  it('emits up and down events when its active and not when its inactive', async function() {
-    let up = 0
-    let down = 0
-    let shown = false
-
-    commands.onShouldMoveUp(function() {
-      up++
+    it('passes on move events if activated', function() {
+      const callback = jasmine.createSpy('commands:list-move')
+      commands.onListMove(callback)
+      commands.processListMove('down')
+      commands.processListMove('down')
+      commands.processListMove('down')
+      commands.active = { type: 'list', subscriptions: new CompositeDisposable() }
+      commands.processListMove('down')
+      commands.processListMove('down')
+      commands.processListMove('down')
+      expect(callback).toHaveBeenCalled()
+      expect(callback.calls.length).toBe(3)
     })
-    commands.onShouldMoveDown(function() {
-      down++
+    it('ignores confirm if not activated', function() {
+      const callback = jasmine.createSpy('commands:list-confirm')
+      commands.onListConfirm(callback)
+      commands.processListConfirm()
+      commands.processListConfirm()
+      commands.processListConfirm()
+      commands.processListConfirm()
+      expect(callback).not.toHaveBeenCalled()
     })
-    commands.onShouldShow(function(e) {
-      e.show = true
-      shown = true
+    it('passes on confirm if activated', function() {
+      const callback = jasmine.createSpy('commands:list-confirm')
+      commands.onListConfirm(callback)
+      commands.processListConfirm()
+      commands.processListConfirm()
+      commands.active = { type: 'list', subscriptions: new CompositeDisposable() }
+      commands.processListConfirm()
+      commands.processListConfirm()
+      expect(callback).toHaveBeenCalled()
+      expect(callback.calls.length).toBe(2)
     })
-    commands.onShouldHide(function() {
-      shown = false
+    it('does not activate if listeners dont say that', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(false)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      await commands.processListShow()
+      commands.processListHide()
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(0)
     })
-    await commands.shouldShow()
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 38)
-    expect(up).toBe(1)
-    expect(down).toBe(0)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 38)
-    expect(up).toBe(2)
-    expect(down).toBe(0)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 38)
-    expect(up).toBe(3)
-    expect(down).toBe(0)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 40)
-    expect(up).toBe(3)
-    expect(down).toBe(1)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 40)
-    expect(up).toBe(3)
-    expect(down).toBe(2)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 40)
-    expect(up).toBe(3)
-    expect(down).toBe(3)
-    expect(shown).toBe(true)
-
-    triggerKeyboardEvent(editorView, 41)
-    expect(up).toBe(3)
-    expect(down).toBe(3)
-    expect(shown).toBe(false)
-  })
-  it('emits shouldHighlight properly', async function() {
-    let show = 0
-    let hide = 0
-    let showHighlight = 0
-
-    commands.onShouldShow(function(e) {
-      e.show = true
-      ++show
+    it('activates when listeners allow', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      await commands.processListShow()
+      commands.processListHide()
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
     })
-    commands.onShouldHide(function() {
-      ++hide
+    it('ignores if list is already active', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      await commands.processListShow()
+      await commands.processListShow()
+      await commands.processListShow()
+      await commands.processListShow()
+      commands.processListHide()
+      commands.processListHide()
+      commands.processListHide()
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
     })
-    commands.onShouldHighlight(function(e) {
-      e.show = true
-      ++showHighlight
+    it('disposes if highlights are active', async function() {
+      let disposed = false
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      await commands.processListShow()
+      commands.processListHide()
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
+      commands.active = { type: 'highlight', subscriptions: new CompositeDisposable() }
+      commands.active.subscriptions.add(new Disposable(function() {
+        disposed = true
+      }))
+      expect(disposed).toBe(false)
+      await commands.processListShow()
+      commands.processListHide()
+      expect(disposed).toBe(true)
+      expect(timesShow).toBe(2)
+      expect(timesHide).toBe(2)
     })
+    it('adds and removes classes appropriately', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      expect(editorView.classList.contains('intentions-list')).toBe(false)
+      await commands.processListShow()
+      expect(editorView.classList.contains('intentions-list')).toBe(true)
+      commands.processListHide()
+      expect(editorView.classList.contains('intentions-list')).toBe(false)
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
+    })
+    it('disposes list on mouseup', async function() {
+      let timesShow = 0
+      let timesHide = 0
+      commands.onListShow(function() {
+        timesShow++
+        return Promise.resolve(true)
+      })
+      commands.onListHide(function() {
+        timesHide++
+      })
+      await commands.processListShow()
+      commands.processListHide()
+      expect(timesShow).toBe(1)
+      expect(timesHide).toBe(1)
+      await commands.processListShow()
+      document.body.dispatchEvent(new MouseEvent('mouseup'))
+      await wait(10)
+      expect(timesShow).toBe(2)
+      expect(timesHide).toBe(2)
+    })
+    describe('command listener', function() {
+      it('just enables when no keyboard event', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onListShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onListHide(function() {
+          timesHide++
+        })
+        atom.commands.dispatch(editorView, 'intentions:show')
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        commands.processListHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
+      it('just enables when keyboard event is not keydown', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onListShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onListHide(function() {
+          timesHide++
+        })
+        atom.keymaps.dispatchCommandEvent('intentions:show', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        commands.processListHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
+      it('disposes itself on any commands other than known', async function() {
+        let timesShow = 0
+        let timesHide = 0
+        commands.onListShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        commands.onListHide(function() {
+          timesHide++
+        })
+        atom.keymaps.dispatchCommandEvent('intentions:show', editorView, getKeyboardEvent('keydown'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
 
-    await commands.shouldShow()
-    expect(show).toBe(1)
-    expect(showHighlight).toBe(0)
-    expect(hide).toBe(0)
+        atom.keymaps.emitter.emit('did-match-binding', { binding: { command: 'core:move-up' } })
+        await wait(10)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
 
-    await commands.shouldHide()
-    expect(show).toBe(1)
-    expect(showHighlight).toBe(0)
-    expect(hide).toBe(1)
+        atom.keymaps.emitter.emit('did-match-binding', { binding: { command: 'core:move-down' } })
+        await wait(10)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(0)
 
-    await commands.shouldShow()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(0)
-    expect(hide).toBe(1)
+        atom.keymaps.emitter.emit('did-match-binding', { binding: { command: 'core:move-confirm' } })
+        await wait(10)
+        document.body.dispatchEvent(getKeyboardEvent('keyup'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
 
-    await commands.shouldHighlight()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(0)
-    expect(hide).toBe(1)
-
-    await commands.shouldHide()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(0)
-    expect(hide).toBe(2)
-
-    await commands.shouldHighlight()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(1)
-    expect(hide).toBe(2)
-
-    await commands.shouldShow()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(1)
-    expect(hide).toBe(2)
-
-    await commands.shouldHide()
-    expect(show).toBe(2)
-    expect(showHighlight).toBe(1)
-    expect(hide).toBe(3)
-
-    await commands.shouldShow()
-    expect(show).toBe(3)
-    expect(showHighlight).toBe(1)
-    expect(hide).toBe(3)
-
-    await commands.shouldHide()
-    expect(show).toBe(3)
-    expect(showHighlight).toBe(1)
-    expect(hide).toBe(4)
-
-    await commands.shouldHighlight()
-    expect(show).toBe(3)
-    expect(showHighlight).toBe(2)
-    expect(hide).toBe(4)
-
-    await commands.shouldHide()
-    expect(show).toBe(3)
-    expect(showHighlight).toBe(2)
-    expect(hide).toBe(5)
-  })
-  it('allows retriggering of list show event', async function() {
-    let show = 0
-    commands.onShouldShow(function() {
-      show++
+        commands.processListHide()
+        expect(timesShow).toBe(1)
+        expect(timesHide).toBe(1)
+      })
     })
-    await commands.shouldShow()
-    await commands.shouldShow()
-    await commands.shouldShow()
-    await commands.shouldShow()
-    await commands.shouldShow()
-    expect(show).toBe(5)
-  })
-  // it('has shouldShow and shouldHighlight accepting promises', function() {
-  it('has shouldShow that accepts a resolving promise', async function() {
-    commands.onShouldShow(function(e) {
-      e.show = true
-    })
-    await commands.shouldShow()
-    expect(commands.active !== null).toBe(true)
-  })
-  it('has shouldShow that accepts a rejecting promise', async function() {
-    commands.onShouldShow(function(e) {
-      e.show = false
-    })
-    await commands.shouldShow()
-    expect(commands.active === null).toBe(true)
-  })
-  it('has shouldHighlight that accepts a resolving promise', async function() {
-    commands.onShouldHighlight(function(e) {
-      e.show = true
-    })
-    await commands.shouldHighlight()
-    expect(commands.active !== null).toBe(true)
-  })
-  it('has shouldHighlight that accepts a rejecting promise', async function() {
-    commands.onShouldHighlight(function(e) {
-      e.show = false
-    })
-    await commands.shouldHighlight()
-    expect(commands.active === null).toBe(true)
-  })
-  it('ignores enter key when list is active', async function() {
-    let show = 0
-    let hide = 0
-    commands.onShouldShow(function(e) {
-      show++
-      e.show = true
-    })
-    commands.onShouldHide(function() {
-      hide++
-    })
-    await commands.shouldShow()
-    expect(show).toBe(1)
-    expect(hide).toBe(0)
-    triggerKeyboardEvent(editorView, 13)
-    expect(show).toBe(1)
-    expect(hide).toBe(0)
-    triggerKeyboardEvent(editorView, 13)
-    expect(show).toBe(1)
-    expect(hide).toBe(0)
-    triggerKeyboardEvent(editorView, 14)
-    expect(show).toBe(1)
-    expect(hide).toBe(1)
-  })
-  it('properly emits should-hide after being activated as highlight', async function() {
-    let highlight = 0
-    let hide = 0
-    commands.onShouldHighlight(function(e) {
-      highlight++
-      e.show = true
-    })
-    commands.onShouldHide(function() {
-      hide++
-    })
-    await commands.shouldHighlight()
-    expect(highlight).toBe(1)
-    expect(hide).toBe(0)
-    await commands.shouldHighlight()
-    expect(highlight).toBe(1)
-    expect(hide).toBe(0)
-    await commands.shouldHighlight()
-    expect(highlight).toBe(1)
-    expect(hide).toBe(0)
-    commands.disposeActive()
-    await commands.shouldHighlight()
-    expect(highlight).toBe(2)
-    expect(hide).toBe(0)
-    triggerKeyboardEvent(editorView, 38, 'keyup')
-    expect(highlight).toBe(2)
-    expect(hide).toBe(1)
-  })
-  it('dismisses list on click', async function() {
-    let show = 0
-    let hide = 0
-    commands.onShouldShow(function(e) {
-      show++
-      e.show = true
-    })
-    commands.onShouldHide(function() {
-      hide++
-    })
-    await commands.shouldShow()
-    expect(show).toBe(1)
-    expect(hide).toBe(0)
-    editorView.dispatchEvent(new MouseEvent('mousedown'))
-    expect(show).toBe(1)
-    expect(hide).toBe(1)
   })
 })

@@ -1,31 +1,30 @@
-'use babel'
+/* @flow */
 
 import * as Helpers from '../lib/helpers'
-import {createSuggestion} from './common'
 
 describe('Helpers', function() {
-  describe('processSuggestions', function() {
+  describe('processListItems', function() {
     it('works', function() {
-      let suggestions = [
+      let suggestions: Array<Object> = [
         {
           priority: 100,
           title: 'title 1',
           class: 'class1',
-          selected: function() {},
-          icon: 'icon1'
+          selected() {},
+          icon: 'icon1',
         },
         {
           priority: 200,
           title: 'title 2',
           class: 'class2',
-          selected: function() {}
-        }
+          selected() {},
+        },
       ]
-      suggestions = Helpers.processSuggestions(suggestions)
+      suggestions = Helpers.processListItems(suggestions)
       expect(suggestions[0].priority).toBe(200)
-      expect(suggestions[0].class).toBe('class2')
+      expect(suggestions[0][Helpers.$class]).toBe('class2')
       expect(suggestions[1].priority).toBe(100)
-      expect(suggestions[1].class).toBe('class1 icon icon-icon1')
+      expect(suggestions[1][Helpers.$class]).toBe('class1 icon icon-icon1')
     })
   })
   describe('showError', function() {
@@ -46,36 +45,6 @@ describe('Helpers', function() {
       expect(notification).toBeDefined()
       expect(notification.message).toBe('[Intentions] ' + title)
       expect(notification.options.detail).toBe(detail)
-    })
-  })
-  describe('disposableEvent', function() {
-    it('properly binds events', function() {
-      const element = document.createElement('div')
-      const callback = jasmine.createSpy('callback')
-      Helpers.disposableEvent(element, 'click', callback)
-      expect(callback).not.toHaveBeenCalled()
-      element.dispatchEvent(new MouseEvent('click'))
-      expect(callback).toHaveBeenCalled()
-    })
-    it('properly unbinds events', function() {
-      const element = document.createElement('div')
-      const callback = jasmine.createSpy('callback')
-      const disposable = Helpers.disposableEvent(element, 'click', callback)
-      expect(callback).not.toHaveBeenCalled()
-      disposable.dispose()
-      element.dispatchEvent(new MouseEvent('click'))
-      expect(callback).not.toHaveBeenCalled()
-    })
-  })
-  describe('preventDefault', function() {
-    it('works', function() {
-      const e = {
-        preventDefault: jasmine.createSpy('preventDefault'),
-        stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation')
-      }
-      Helpers.preventDefault(e)
-      expect(e.preventDefault).toHaveBeenCalled()
-      expect(e.stopImmediatePropagation).toHaveBeenCalled()
     })
   })
 })
