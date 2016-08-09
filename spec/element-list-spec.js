@@ -1,7 +1,7 @@
 /* @flow */
 
 import ListElement from '../lib/elements/list'
-import { createSuggestion } from './common'
+import { createSuggestion } from './helpers'
 
 describe('Intentions list element', function() {
   it('has a complete working lifecycle', function() {

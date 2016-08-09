@@ -16,21 +16,10 @@ export function createSuggestion(text, selected, className = '', icon = '', proc
   return suggestion
 }
 
-export function triggerKeyboardEvent(element, code, name = 'keydown') {
+export function getKeyboardEvent(name = 'keydown', code = 0): KeyboardEvent {
   const event = new KeyboardEvent(name)
-  Object.defineProperty(event, 'which', {
+  Object.defineProperty(event, 'keyCode', {
     value: code,
   })
-  element.dispatchEvent(event)
-}
-
-export function it(name, callback) {
-  global.it(name, function() {
-    const value = callback()
-    if (value && value.constructor.name === 'Promise') {
-      waitsForPromise(function() {
-        return value
-      })
-    }
-  })
+  return event
 }
