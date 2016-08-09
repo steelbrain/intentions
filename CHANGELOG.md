@@ -1,4 +1,4 @@
-#### Upcoming Changes
+#### 1.1.0
 
 - Do not overwrite to `.class` on list intentions
 - Any other unmentioned commands related bugs previously present
