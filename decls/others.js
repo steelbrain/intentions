@@ -1,7 +1,7 @@
 /* @flow */
 
-declare function requestAnimationFrame(callback: (() => void)): void;
 declare var jasmine: Object;
+declare function requestAnimationFrame(callback: (() => void)): void;
 
 declare function it(name: string, callback: (() => void)): void;
 declare function fit(name: string, callback: (() => void)): void;

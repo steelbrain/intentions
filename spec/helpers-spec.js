@@ -47,35 +47,4 @@ describe('Helpers', function() {
       expect(notification.options.detail).toBe(detail)
     })
   })
-  describe('disposableEvent', function() {
-    it('properly binds events', function() {
-      const element = document.createElement('div')
-      const callback = jasmine.createSpy('callback')
-      Helpers.disposableEvent(element, 'click', callback)
-      expect(callback).not.toHaveBeenCalled()
-      element.dispatchEvent(new MouseEvent('click'))
-      expect(callback).toHaveBeenCalled()
-    })
-    it('properly unbinds events', function() {
-      const element = document.createElement('div')
-      const callback = jasmine.createSpy('callback')
-      const disposable = Helpers.disposableEvent(element, 'click', callback)
-      expect(callback).not.toHaveBeenCalled()
-      disposable.dispose()
-      element.dispatchEvent(new MouseEvent('click'))
-      expect(callback).not.toHaveBeenCalled()
-    })
-  })
-  describe('preventDefault', function() {
-    it('works', function() {
-      // $FlowIgnore: Shut up, It's an event :P
-      const e: Event = {
-        preventDefault: jasmine.createSpy('preventDefault'),
-        stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
-      }
-      Helpers.preventDefault(e)
-      expect(e.preventDefault).toHaveBeenCalled()
-      expect(e.stopImmediatePropagation).toHaveBeenCalled()
-    })
-  })
 })
