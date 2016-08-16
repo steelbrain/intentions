@@ -1,3 +1,7 @@
+#### 1.1.2
+
+- Handle double activations gracefully (Fixes #26)
+
 #### 1.1.1
 
 - Fix movement with navigation keys
