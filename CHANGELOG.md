@@ -1,3 +1,7 @@
+#### Upcoming
+
+- Fix another instance where mixing clicks + keyboard would break the list (Fixes #26)
+
 #### 1.1.2
 
 - Handle double activations gracefully (Fixes #26)
