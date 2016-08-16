@@ -1,3 +1,7 @@
+#### 1.1.1
+
+- Fix movement with navigation keys
+
 #### 1.1.0
 
 - Do not overwrite to `.class` on list intentions
