@@ -132,6 +132,20 @@ describe('Commands', function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
+      it('ignores more than one activation requests', async function() {
+        let timesShow = 0
+        commands.onHighlightsShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        atom.keymaps.dispatchCommandEvent('intentions:highlight', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        expect(timesShow).toBe(1)
+      })
       it('just activates if keyboard event is not keydown', async function() {
         let timesShow = 0
         let timesHide = 0
@@ -424,6 +438,20 @@ describe('Commands', function() {
         commands.processListHide()
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
+      })
+      it('ignores more than one activation requests', async function() {
+        let timesShow = 0
+        commands.onListShow(function() {
+          timesShow++
+          return Promise.resolve(true)
+        })
+        atom.keymaps.dispatchCommandEvent('intentions:show', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        atom.keymaps.dispatchCommandEvent('intentions:show', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        atom.keymaps.dispatchCommandEvent('intentions:show', editorView, getKeyboardEvent('keypress'))
+        await wait(10)
+        expect(timesShow).toBe(1)
       })
       it('disposes itself on any commands other than known', async function() {
         let timesShow = 0
