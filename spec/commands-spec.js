@@ -56,7 +56,7 @@ describe('Commands', function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it('ignores if already highlighted', async function() {
+    it('throws if already highlighted', async function() {
       let timesShow = 0
       let timesHide = 0
       commands.onHighlightsShow(function() {
@@ -67,8 +67,18 @@ describe('Commands', function() {
         timesHide++
       })
       await commands.processHighlightsShow()
-      await commands.processHighlightsShow()
-      await commands.processHighlightsShow()
+      try {
+        await commands.processHighlightsShow()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Already active')
+      }
+      try {
+        await commands.processHighlightsShow()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Already active')
+      }
       commands.processHighlightsHide()
       commands.processHighlightsHide()
       commands.processHighlightsHide()
@@ -282,9 +292,24 @@ describe('Commands', function() {
         timesHide++
       })
       await commands.processListShow()
-      await commands.processListShow()
-      await commands.processListShow()
-      await commands.processListShow()
+      try {
+        await commands.processListShow()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Already active')
+      }
+      try {
+        await commands.processListShow()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Already active')
+      }
+      try {
+        await commands.processListShow()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Already active')
+      }
       commands.processListHide()
       commands.processListHide()
       commands.processListHide()
