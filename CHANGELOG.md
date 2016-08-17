@@ -1,5 +1,6 @@
 #### Upcoming
 
+- Fix a bug where clicking on the list would not fire the callback
 - Fix another instance where mixing clicks + keyboard would break the list (Fixes #26)
 
 #### 1.1.2
