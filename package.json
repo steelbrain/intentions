@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "eslint-config-steelbrain": "^1.0.4",
+    "flow-bin": "^0.30.0",
     "jasmine-fix": "^1.0.1"
   },
   "consumedServices": {
@@ -31,7 +32,6 @@
     }
   },
   "scripts": {
-    "lint": "eslint .",
-    "test": "apm test"
+    "test": "(apm test) && (flow check | grep -q '0 errors') && (eslint . )"
   }
 }
