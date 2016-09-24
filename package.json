@@ -10,7 +10,7 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
-    "disposable-event": "^1.0.1",
+    "disposable-event": "^1.0.2",
     "sb-event-kit": "^2.0.0",
     "vanilla-jsx": "^3.0.2"
   },
