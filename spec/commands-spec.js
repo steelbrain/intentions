@@ -1,6 +1,6 @@
 /* @flow */
 
-import { CompositeDisposable, Disposable } from 'sb-event-kit'
+import { CompositeDisposable } from 'sb-event-kit'
 import { it, beforeEach, wait } from 'jasmine-fix'
 import Commands from '../lib/commands'
 import { getKeyboardEvent } from './helpers'
@@ -89,9 +89,9 @@ describe('Commands', function() {
     it('disposes list if available', async function() {
       let disposed = false
       const active = { type: 'list', subscriptions: new CompositeDisposable() }
-      active.subscriptions.add(new Disposable(function() {
+      active.subscriptions.add(function() {
         disposed = true
-      }))
+      })
       commands.active = active
       expect(disposed).toBe(false)
       await commands.processHighlightsShow()
@@ -370,9 +370,9 @@ describe('Commands', function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
       commands.active = { type: 'highlight', subscriptions: new CompositeDisposable() }
-      commands.active.subscriptions.add(new Disposable(function() {
+      commands.active.subscriptions.add(function() {
         disposed = true
-      }))
+      })
       expect(disposed).toBe(false)
       await commands.processListShow()
       commands.processListHide()
