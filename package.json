@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "disposable-event": "^1.0.1",
-    "sb-event-kit": "^2.0.0",
+    "sb-event-kit": "^3.0.0",
     "vanilla-jsx": "^3.0.2"
   },
   "devDependencies": {
