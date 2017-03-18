@@ -32,6 +32,6 @@
     }
   },
   "scripts": {
-    "test": "(apm test) && (flow check | grep -q '0 errors') && (eslint . )"
+    "test": "(apm test) && (flow check) && (eslint . )"
   }
 }
