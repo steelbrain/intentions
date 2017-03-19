@@ -1,6 +1,8 @@
 Intentions
 =========
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/steelbrain/intentions.svg)](https://greenkeeper.io/)
+
 Intentions is a base package that provides an easy-to-use API to show intentions based in Atom.
 
 #### Usage
