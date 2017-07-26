@@ -1,3 +1,7 @@
+#### 1.1.4
+
+- Fix a regression from last release
+
 #### 1.1.3
 
 - Cache results until editor text is changed
