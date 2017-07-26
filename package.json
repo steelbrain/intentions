@@ -1,7 +1,7 @@
 {
   "name": "intentions",
   "main": "./lib/index.js",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Base package for showing intentions in Atom",
   "keywords": [],
   "repository": "https://github.com/steelbrain/intentions",
