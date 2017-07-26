@@ -1,4 +1,4 @@
-#### Upcoming
+#### 1.1.3
 
 - Cache results until editor text is changed
 - Fix a bug where clicking on the list would not fire the callback
