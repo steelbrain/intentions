@@ -1,3 +1,7 @@
+#### 1.1.5
+
+- Remove cache introduced in v1.1.3
+
 #### 1.1.4
 
 - Fix a regression from last release
