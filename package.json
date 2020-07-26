@@ -17,7 +17,8 @@
   "devDependencies": {
     "eslint-config-steelbrain": "^7",
     "flow-bin": "^0.46.0",
-    "jasmine-fix": "^1.0.1"
+    "jasmine-fix": "^1.0.1",
+    "@types/atom": "latest"
   },
   "consumedServices": {
     "intentions:list": {
