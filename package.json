@@ -15,7 +15,7 @@
     "vanilla-jsx": "^3.0.2"
   },
   "devDependencies": {
-    "eslint-config-steelbrain": "^2.0.0",
+    "eslint-config-steelbrain": "^7",
     "flow-bin": "^0.46.0",
     "jasmine-fix": "^1.0.1"
   },
@@ -32,6 +32,7 @@
     }
   },
   "scripts": {
+    "lintfix": "eslint . --fix",
     "test": "(apm test) && (flow check) && (eslint . )"
   }
 }

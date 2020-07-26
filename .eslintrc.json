@@ -3,5 +3,11 @@
   "rules": {
     "no-param-reassign": 0,
     "no-duplicate-imports": 0
+  },
+  "globals": {
+    "atom": "readonly"
+  },
+  "settings": {
+    "import/core-modules": [ "atom" ]
   }
 }
