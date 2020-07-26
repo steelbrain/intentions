@@ -2,7 +2,10 @@
   "extends": "steelbrain",
   "rules": {
     "no-param-reassign": 0,
-    "no-duplicate-imports": 0
+    "no-duplicate-imports": 0,
+    "flowtype/no-types-missing-file-annotation": 1,
+    "react/no-string-refs": 1,
+    "prefer-destructuring": 1
   },
   "globals": {
     "atom": "readonly"
