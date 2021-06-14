@@ -1,0 +1,38 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  Test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    name: ${{ matrix.os }} - Atom ${{ matrix.atom_channel }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          # - macos-latest
+          # - windows-latest
+        atom_channel: [stable, beta]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: atom-community/action-setup-atom@v1
+        with:
+          channel: ${{ matrix.atom_channel }}
+
+      - name: Install dependencies
+        run: |
+          apm install
+
+      - name: Run tests 👩🏾‍💻
+        run: npm run test
+
+      - name: Flow
+        run: npm run test.flow
+
+      - name: Lint
+        run: npm run test.lint

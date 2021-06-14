@@ -33,7 +33,9 @@
     }
   },
   "scripts": {
-    "lintfix": "eslint . --fix",
-    "test": "(apm test) && (flow check) && (eslint . )"
+    "lint": "eslint . --fix",
+    "test.lint": "eslint .",
+    "test.flow": "flow check",
+    "test": "atom --test spec"
   }
 }
