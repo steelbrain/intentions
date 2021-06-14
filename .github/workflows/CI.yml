@@ -30,3 +30,9 @@ jobs:
 
       - name: Run tests 👩🏾‍💻
         run: npm run test
+
+      - name: Flow
+        run: npm run test.flow
+
+      - name: Lint
+        run: npm run test.lint
