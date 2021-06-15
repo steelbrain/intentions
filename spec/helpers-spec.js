@@ -1,11 +1,12 @@
 /* @flow */
 
 import * as Helpers from "../lib/helpers"
+import type { ListItem } from "../lib/types"
 
 describe("Helpers", function() {
   describe("processListItems", function() {
     it("works", function() {
-      let suggestions: Array<Record<string, any>> = [
+      let suggestions: Array<ListItem> = [
         {
           priority: 100,
           title: "title 1",
