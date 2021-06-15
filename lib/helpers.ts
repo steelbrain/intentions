@@ -33,9 +33,3 @@ export function showError(message: Error | string, detail?: string) {
     dismissable: true,
   })
 }
-export function stoppingEvent(callback: (event: Event) => any): (event: Event) => void {
-  return function (event: Event) {
-    event.stopImmediatePropagation()
-    callback.call(this, event)
-  }
-}

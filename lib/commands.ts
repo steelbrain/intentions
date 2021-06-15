@@ -2,7 +2,6 @@ import disposableEvent from "disposable-event"
 import { CompositeDisposable, Disposable, Emitter } from "sb-event-kit"
 import type { TextEditor } from "atom"
 
-import { stoppingEvent } from "./helpers"
 import type { ListMovement } from "./types"
 import type { CommandEventExtended } from "./types/atom"
 
@@ -102,29 +101,36 @@ export default class Commands {
     )
     this.subscriptions.add(
       atom.commands.add("atom-text-editor.intentions-list:not([mini])", {
-        "intentions:confirm": stoppingEvent(() => {
+        "intentions:confirm": this.stoppingEvent(() => {
           this.processListConfirm()
         }),
-        "core:move-up": stoppingEvent(() => {
+        "core:move-up": this.stoppingEvent(() => {
           this.processListMove("up")
         }),
-        "core:move-down": stoppingEvent(() => {
+        "core:move-down": this.stoppingEvent(() => {
           this.processListMove("down")
         }),
-        "core:page-up": stoppingEvent(() => {
+        "core:page-up": this.stoppingEvent(() => {
           this.processListMove("page-up")
         }),
-        "core:page-down": stoppingEvent(() => {
+        "core:page-down": this.stoppingEvent(() => {
           this.processListMove("page-down")
         }),
-        "core:move-to-top": stoppingEvent(() => {
+        "core:move-to-top": this.stoppingEvent(() => {
           this.processListMove("move-to-top")
         }),
-        "core:move-to-bottom": stoppingEvent(() => {
+        "core:move-to-bottom": this.stoppingEvent(() => {
           this.processListMove("move-to-bottom")
         }),
       })
     )
+  }
+
+  stoppingEvent(callback: (event: Event) => any): (event: Event) => void {
+    return (event: Event) => {
+      event.stopImmediatePropagation()
+      callback.call(this, event)
+    }
   }
 
   async processListShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
