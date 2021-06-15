@@ -5,7 +5,7 @@ export const $class = "__$sb_intentions_class"
 export function processListItems(suggestions: Array<ListItem>): Array<ListItem> {
   for (let i = 0, { length } = suggestions; i < length; ++i) {
     const suggestion = suggestions[i]
-    const className = []
+    const className: string[] = []
 
     if (suggestion.class) {
       className.push(suggestion.class.trim())
