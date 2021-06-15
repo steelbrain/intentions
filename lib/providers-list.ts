@@ -42,7 +42,7 @@ export default class ProvidersList {
     scopes.push("*")
     const promises: Promise<ListItem[]>[] = []
     this.providers.forEach(function (provider) {
-      if (scopes.some((scope) => provider.grammarScopes.indexOf(scope) !== -1)) {
+      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
         promises.push(
           new Promise<ListItem[]>(function (resolve) {
             resolve(

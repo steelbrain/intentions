@@ -46,7 +46,7 @@ export default class ProvidersHighlight {
     visibleRange.end.column = Infinity
     const promises: Promise<HighlightItem[]>[] = []
     this.providers.forEach(function (provider) {
-      if (scopes.some((scope) => provider.grammarScopes.indexOf(scope) !== -1)) {
+      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
         promises.push(
           new Promise<HighlightItem[]>(function (resolve) {
             resolve(
