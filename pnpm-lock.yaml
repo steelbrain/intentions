@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@types/atom': latest
+  '@types/jasmine': v1
   disposable-event: ^1.0.3
   eslint-config-atomic: ^1.16.0
   jasmine-fix: ^1.3.1
@@ -17,6 +18,7 @@ dependencies:
 
 devDependencies:
   '@types/atom': 1.40.10
+  '@types/jasmine': 1.3.3
   eslint-config-atomic: 1.16.0
   jasmine-fix: 1.3.1
   prettier-config-atomic: 2.0.5
@@ -344,6 +346,10 @@ packages:
     resolution: {integrity: sha512-aNFUhCuR6nmTTMoYKfWWMifZ3IcNETLWC75hCdg3i1/OvirfR/5qm1wfiISBb4s/TPM2YVEtxytCdWhKJuEhzw==}
     dependencies:
       '@types/node': 15.12.2
+    dev: true
+
+  /@types/jasmine/1.3.3:
+    resolution: {integrity: sha512-fxMpf+GX83E9UTKquhWD5mJScxPVB+VkcBO5s9a6MLJxezNhvBiqj5Cm7WjRB5ibmrzJHyjNUmpKgoVGOQ89uw==}
     dev: true
 
   /@types/json-schema/7.0.7:

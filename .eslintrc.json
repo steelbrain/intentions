@@ -1,4 +1,4 @@
 {
   "extends": "eslint-config-atomic",
-  "ignorePatterns": ["dist/", "node_modules/", "decls/"]
+  "ignorePatterns": ["dist/", "node_modules/"]
 }
