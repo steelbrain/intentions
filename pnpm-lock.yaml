@@ -4,10 +4,10 @@ specifiers:
   '@types/atom': latest
   disposable-event: ^1.0.3
   eslint-config-atomic: ^1.16.0
-  flow-bin: 0.130.0
   jasmine-fix: ^1.3.1
   prettier-config-atomic: ^2.0.5
   sb-event-kit: ^3.0.0
+  typescript: ^4.3.2
   vanilla-jsx: ^3.0.2
 
 dependencies:
@@ -18,9 +18,9 @@ dependencies:
 devDependencies:
   '@types/atom': 1.40.10
   eslint-config-atomic: 1.16.0
-  flow-bin: 0.130.0
   jasmine-fix: 1.3.1
   prettier-config-atomic: 2.0.5
+  typescript: 4.3.2
 
 packages:
 
@@ -1525,12 +1525,6 @@ packages:
 
   /flatted/3.1.1:
     resolution: {integrity: sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==}
-    dev: true
-
-  /flow-bin/0.130.0:
-    resolution: {integrity: sha512-1TSLwCPXvKPwiae7Fh+dpipCzwlHQ1UcBHfCpQImz+hsxYIUWkLWJWEm34bY6I7dSM4ekSiVeP02BhzVJGwtpw==}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
     dev: true
 
   /fs.realpath/1.0.0:

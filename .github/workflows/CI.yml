@@ -53,8 +53,5 @@ jobs:
       - name: Format ✨
         run: pnpm run test.format
 
-      - name: Flow
-        run: pnpm run test.flow
-
       - name: Lint
         run: pnpm run test.lint
