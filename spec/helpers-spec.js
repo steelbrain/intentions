@@ -3,23 +3,23 @@
 import * as Helpers from "../lib/helpers"
 import type { ListItem } from "../lib/types"
 
-describe("Helpers", function() {
-  describe("processListItems", function() {
-    it("works", function() {
+describe("Helpers", function () {
+  describe("processListItems", function () {
+    it("works", function () {
       let suggestions: Array<ListItem> = [
         {
           priority: 100,
           title: "title 1",
           class: "class1",
           selected() {},
-          icon: "icon1"
+          icon: "icon1",
         },
         {
           priority: 200,
           title: "title 2",
           class: "class2",
-          selected() {}
-        }
+          selected() {},
+        },
       ]
       suggestions = Helpers.processListItems(suggestions)
       expect(suggestions[0].priority).toBe(200)
@@ -28,8 +28,8 @@ describe("Helpers", function() {
       expect(suggestions[1][Helpers.$class]).toBe("class1 icon icon-icon1")
     })
   })
-  describe("showError", function() {
-    it("works well with error objects", function() {
+  describe("showError", function () {
+    it("works well with error objects", function () {
       const error = new Error("Something")
       Helpers.showError(error)
       const notification = atom.notifications.getNotifications()[0]
@@ -37,7 +37,7 @@ describe("Helpers", function() {
       expect(notification.message).toBe("[Intentions] Something")
       expect(notification.options.detail).toBe(error.stack)
     })
-    it("works well with strings", function() {
+    it("works well with strings", function () {
       const title = "Some Title"
       const detail = "Some Detail"
 

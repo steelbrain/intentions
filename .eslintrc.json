@@ -1,17 +1,4 @@
 {
-  "extends": "steelbrain",
-  "rules": {
-    "no-param-reassign": 0,
-    "no-duplicate-imports": 0,
-    "flowtype/no-types-missing-file-annotation": 1,
-    "react/no-string-refs": 1,
-    "prefer-destructuring": 1,
-    "react/destructuring-assignment": "off"
-  },
-  "globals": {
-    "atom": "readonly"
-  },
-  "settings": {
-    "import/core-modules": [ "atom" ]
-  }
+  "extends": "eslint-config-atomic",
+  "ignorePatterns": ["dist/", "node_modules/", "decls/"]
 }

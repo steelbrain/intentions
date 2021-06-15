@@ -5,17 +5,17 @@ import { it, beforeEach, wait } from "jasmine-fix"
 import Commands from "../lib/commands"
 import { getKeyboardEvent } from "./helpers"
 
-describe("Commands", function() {
+describe("Commands", function () {
   let commands
   let editorView
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     commands = new Commands()
     commands.activate()
     await atom.workspace.open(__filename)
     editorView = atom.views.getView(atom.workspace.getActiveTextEditor())
   })
-  afterEach(function() {
+  afterEach(function () {
     atom.workspace.destroyActivePane()
     commands.dispose()
   })
@@ -24,18 +24,18 @@ describe("Commands", function() {
     document.body.dispatchEvent(event)
   }
 
-  describe("Highlights", function() {
-    it("does nothing if not activated and we try to deactivate", function() {
+  describe("Highlights", function () {
+    it("does nothing if not activated and we try to deactivate", function () {
       commands.processHighlightsHide()
     })
-    it("does not activate unless provider tells it to", async function() {
+    it("does not activate unless provider tells it to", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onHighlightsShow(function() {
+      commands.onHighlightsShow(function () {
         timesShow++
         return Promise.resolve(false)
       })
-      commands.onHighlightsHide(function() {
+      commands.onHighlightsHide(function () {
         timesHide++
       })
       await commands.processHighlightsShow()
@@ -44,14 +44,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(0)
     })
-    it("activates when the provider tells it to", async function() {
+    it("activates when the provider tells it to", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onHighlightsShow(function() {
+      commands.onHighlightsShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onHighlightsHide(function() {
+      commands.onHighlightsHide(function () {
         timesHide++
       })
       await commands.processHighlightsShow()
@@ -60,14 +60,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it("throws if already highlighted", async function() {
+    it("throws if already highlighted", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onHighlightsShow(function() {
+      commands.onHighlightsShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onHighlightsHide(function() {
+      commands.onHighlightsHide(function () {
         timesHide++
       })
       await commands.processHighlightsShow()
@@ -90,10 +90,10 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it("disposes list if available", async function() {
+    it("disposes list if available", async function () {
       let disposed = false
       const active = { type: "list", subscriptions: new CompositeDisposable() }
-      active.subscriptions.add(function() {
+      active.subscriptions.add(function () {
         disposed = true
       })
       commands.active = active
@@ -101,8 +101,8 @@ describe("Commands", function() {
       await commands.processHighlightsShow()
       expect(disposed).toBe(true)
     })
-    it("adds and removes classes appropriately", async function() {
-      commands.onHighlightsShow(function() {
+    it("adds and removes classes appropriately", async function () {
+      commands.onHighlightsShow(function () {
         return Promise.resolve(true)
       })
       expect(editorView.classList.contains("intentions-highlights")).toBe(false)
@@ -111,15 +111,15 @@ describe("Commands", function() {
       commands.processHighlightsHide()
       expect(editorView.classList.contains("intentions-highlights")).toBe(false)
     })
-    describe("command listener", function() {
-      it("just activates if theres no keyboard event attached", async function() {
+    describe("command listener", function () {
+      it("just activates if theres no keyboard event attached", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onHighlightsHide(function() {
+        commands.onHighlightsHide(function () {
           timesHide++
         })
         expect(timesShow).toBe(0)
@@ -136,9 +136,9 @@ describe("Commands", function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
-      it("ignores more than one activation requests", async function() {
+      it("ignores more than one activation requests", async function () {
         let timesShow = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
@@ -150,14 +150,14 @@ describe("Commands", function() {
         await wait(10)
         expect(timesShow).toBe(1)
       })
-      it("disposes the keyboard listener when we dispose it with the class function", async function() {
+      it("disposes the keyboard listener when we dispose it with the class function", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onHighlightsHide(function() {
+        commands.onHighlightsHide(function () {
           timesHide++
         })
         spyOn(commands, "processHighlightsHide").andCallThrough()
@@ -174,14 +174,14 @@ describe("Commands", function() {
         expect(timesHide).toBe(1)
         expect(commands.processHighlightsHide.calls.length).toBe(1)
       })
-      it("just activates if keyboard event is not keydown", async function() {
+      it("just activates if keyboard event is not keydown", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onHighlightsHide(function() {
+        commands.onHighlightsHide(function () {
           timesHide++
         })
         expect(timesShow).toBe(0)
@@ -198,14 +198,14 @@ describe("Commands", function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
-      it("does not deactivate if keyup is not same keycode", async function() {
+      it("does not deactivate if keyup is not same keycode", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onHighlightsHide(function() {
+        commands.onHighlightsHide(function () {
           timesHide++
         })
         expect(timesShow).toBe(0)
@@ -222,14 +222,14 @@ describe("Commands", function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
-      it("does deactivate if keyup is the same keycode", async function() {
+      it("does deactivate if keyup is the same keycode", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onHighlightsShow(function() {
+        commands.onHighlightsShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onHighlightsHide(function() {
+        commands.onHighlightsHide(function () {
           timesHide++
         })
         expect(timesShow).toBe(0)
@@ -248,11 +248,11 @@ describe("Commands", function() {
       })
     })
   })
-  describe("Lists", function() {
-    it("does nothing if deactivated and we try to activate it", function() {
+  describe("Lists", function () {
+    it("does nothing if deactivated and we try to activate it", function () {
       commands.processListHide()
     })
-    it("does not pass on move events if not activated", function() {
+    it("does not pass on move events if not activated", function () {
       const callback = jasmine.createSpy("commands:list-move")
       commands.onListMove(callback)
       commands.processListMove("up")
@@ -260,7 +260,7 @@ describe("Commands", function() {
       commands.processListMove("down")
       expect(callback).not.toHaveBeenCalled()
     })
-    it("passes on move events if activated", function() {
+    it("passes on move events if activated", function () {
       const callback = jasmine.createSpy("commands:list-move")
       commands.onListMove(callback)
       commands.processListMove("down")
@@ -268,7 +268,7 @@ describe("Commands", function() {
       commands.processListMove("down")
       commands.active = {
         type: "list",
-        subscriptions: new CompositeDisposable()
+        subscriptions: new CompositeDisposable(),
       }
       commands.processListMove("down")
       commands.processListMove("down")
@@ -276,7 +276,7 @@ describe("Commands", function() {
       expect(callback).toHaveBeenCalled()
       expect(callback.calls.length).toBe(3)
     })
-    it("ignores confirm if not activated", function() {
+    it("ignores confirm if not activated", function () {
       const callback = jasmine.createSpy("commands:list-confirm")
       commands.onListConfirm(callback)
       commands.processListConfirm()
@@ -285,28 +285,28 @@ describe("Commands", function() {
       commands.processListConfirm()
       expect(callback).not.toHaveBeenCalled()
     })
-    it("passes on confirm if activated", function() {
+    it("passes on confirm if activated", function () {
       const callback = jasmine.createSpy("commands:list-confirm")
       commands.onListConfirm(callback)
       commands.processListConfirm()
       commands.processListConfirm()
       commands.active = {
         type: "list",
-        subscriptions: new CompositeDisposable()
+        subscriptions: new CompositeDisposable(),
       }
       commands.processListConfirm()
       commands.processListConfirm()
       expect(callback).toHaveBeenCalled()
       expect(callback.calls.length).toBe(2)
     })
-    it("does not activate if listeners dont say that", async function() {
+    it("does not activate if listeners dont say that", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(false)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       await commands.processListShow()
@@ -314,14 +314,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(0)
     })
-    it("activates when listeners allow", async function() {
+    it("activates when listeners allow", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       await commands.processListShow()
@@ -329,14 +329,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it("ignores if list is already active", async function() {
+    it("ignores if list is already active", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       await commands.processListShow()
@@ -364,15 +364,15 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it("disposes if highlights are active", async function() {
+    it("disposes if highlights are active", async function () {
       let disposed = false
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       await commands.processListShow()
@@ -381,9 +381,9 @@ describe("Commands", function() {
       expect(timesHide).toBe(1)
       commands.active = {
         type: "highlight",
-        subscriptions: new CompositeDisposable()
+        subscriptions: new CompositeDisposable(),
       }
-      commands.active.subscriptions.add(function() {
+      commands.active.subscriptions.add(function () {
         disposed = true
       })
       expect(disposed).toBe(false)
@@ -393,14 +393,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(2)
       expect(timesHide).toBe(2)
     })
-    it("adds and removes classes appropriately", async function() {
+    it("adds and removes classes appropriately", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       expect(editorView.classList.contains("intentions-list")).toBe(false)
@@ -411,14 +411,14 @@ describe("Commands", function() {
       expect(timesShow).toBe(1)
       expect(timesHide).toBe(1)
     })
-    it("disposes list on mouseup", async function() {
+    it("disposes list on mouseup", async function () {
       let timesShow = 0
       let timesHide = 0
-      commands.onListShow(function() {
+      commands.onListShow(function () {
         timesShow++
         return Promise.resolve(true)
       })
-      commands.onListHide(function() {
+      commands.onListHide(function () {
         timesHide++
       })
       await commands.processListShow()
@@ -431,15 +431,15 @@ describe("Commands", function() {
       expect(timesShow).toBe(2)
       expect(timesHide).toBe(2)
     })
-    describe("command listener", function() {
-      it("just enables when no keyboard event", async function() {
+    describe("command listener", function () {
+      it("just enables when no keyboard event", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onListShow(function() {
+        commands.onListShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onListHide(function() {
+        commands.onListHide(function () {
           timesHide++
         })
         atom.commands.dispatch(editorView, "intentions:show")
@@ -454,14 +454,14 @@ describe("Commands", function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
-      it("just enables when keyboard event is not keydown", async function() {
+      it("just enables when keyboard event is not keydown", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onListShow(function() {
+        commands.onListShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onListHide(function() {
+        commands.onListHide(function () {
           timesHide++
         })
         atom.keymaps.dispatchCommandEvent("intentions:show", editorView, getKeyboardEvent("keypress"))
@@ -476,14 +476,14 @@ describe("Commands", function() {
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(1)
       })
-      it("disposes the keyboard listener when we dispose it with the class function", async function() {
+      it("disposes the keyboard listener when we dispose it with the class function", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onListShow(function() {
+        commands.onListShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onListHide(function() {
+        commands.onListHide(function () {
           timesHide++
         })
         spyOn(commands, "processListHide").andCallThrough()
@@ -500,9 +500,9 @@ describe("Commands", function() {
         expect(timesHide).toBe(1)
         expect(commands.processListHide.calls.length).toBe(1)
       })
-      it("ignores more than one activation requests", async function() {
+      it("ignores more than one activation requests", async function () {
         let timesShow = 0
-        commands.onListShow(function() {
+        commands.onListShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
@@ -514,14 +514,14 @@ describe("Commands", function() {
         await wait(10)
         expect(timesShow).toBe(1)
       })
-      it("disposes itself on any commands other than known", async function() {
+      it("disposes itself on any commands other than known", async function () {
         let timesShow = 0
         let timesHide = 0
-        commands.onListShow(function() {
+        commands.onListShow(function () {
           timesShow++
           return Promise.resolve(true)
         })
-        commands.onListHide(function() {
+        commands.onListHide(function () {
           timesHide++
         })
         atom.keymaps.dispatchCommandEvent("intentions:show", editorView, getKeyboardEvent("keydown"))
@@ -534,7 +534,7 @@ describe("Commands", function() {
         expect(timesHide).toBe(0)
 
         atom.keymaps.emitter.emit("did-match-binding", {
-          binding: { command: "core:move-up" }
+          binding: { command: "core:move-up" },
         })
         await wait(10)
         dispatchEventOnBody(getKeyboardEvent("keyup"))
@@ -543,7 +543,7 @@ describe("Commands", function() {
         expect(timesHide).toBe(0)
 
         atom.keymaps.emitter.emit("did-match-binding", {
-          binding: { command: "core:move-down" }
+          binding: { command: "core:move-down" },
         })
         await wait(10)
         dispatchEventOnBody(getKeyboardEvent("keyup"))
@@ -552,7 +552,7 @@ describe("Commands", function() {
         expect(timesHide).toBe(0)
 
         atom.keymaps.emitter.emit("did-match-binding", {
-          binding: { command: "core:move-confirm" }
+          binding: { command: "core:move-confirm" },
         })
         await wait(10)
         dispatchEventOnBody(getKeyboardEvent("keyup"))

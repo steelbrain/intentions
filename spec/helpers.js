@@ -8,7 +8,7 @@ export function createSuggestion(text, selected, className = "", icon = "", proc
     title: text,
     class: className,
     priority: 100,
-    selected
+    selected,
   }
   if (process) {
     return processListItems([suggestion])[0]
@@ -19,7 +19,7 @@ export function createSuggestion(text, selected, className = "", icon = "", proc
 export function getKeyboardEvent(name = "keydown", code = 0): KeyboardEvent {
   const event = new KeyboardEvent(name)
   Object.defineProperty(event, "keyCode", {
-    value: code
+    value: code,
   })
   return event
 }

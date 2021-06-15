@@ -50,8 +50,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # - name: Format ✨
-      #   run: pnpm run test.format
+      - name: Format ✨
+        run: pnpm run test.format
 
       - name: Flow
         run: pnpm run test.flow

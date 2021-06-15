@@ -15,11 +15,13 @@
     "vanilla-jsx": "^3.0.2"
   },
   "devDependencies": {
-    "eslint-config-steelbrain": "7",
+    "@types/atom": "latest",
+    "eslint-config-atomic": "^1.16.0",
     "flow-bin": "0.130.0",
     "jasmine-fix": "^1.3.1",
-    "@types/atom": "latest"
+    "prettier-config-atomic": "^2.0.5"
   },
+  "prettier": "prettier-config-atomic",
   "consumedServices": {
     "intentions:list": {
       "versions": {
@@ -33,6 +35,8 @@
     }
   },
   "scripts": {
+    "format": "prettier --write .",
+    "test.format": "prettier --check .",
     "lint": "eslint . --fix",
     "test.lint": "eslint .",
     "test.flow": "flow check",
