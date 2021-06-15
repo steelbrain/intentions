@@ -4,6 +4,7 @@ import type { TextEditor } from "atom"
 
 import type { ListMovement } from "./types"
 import type { CommandEventExtended } from "./types/atom"
+import { TargetWithAddEventListener } from "disposable-event/src/target"
 
 // NOTE:
 // We don't *need* to add the intentions:hide command
@@ -65,7 +66,7 @@ export default class Commands {
               })
             )
             subscriptions.add(
-              disposableEvent(document.body, "keyup", () => {
+              disposableEvent(document.body as unknown as TargetWithAddEventListener, "keyup", () => {
                 if (matched) {
                   return
                 }
@@ -93,7 +94,7 @@ export default class Commands {
 
           const { keyCode } = e.originalEvent
           subscriptions.add(
-            disposableEvent(document.body, "keyup", (upE: KeyboardEvent) => {
+            disposableEvent(document.body as unknown as TargetWithAddEventListener, "keyup", (upE: KeyboardEvent) => {
               if (upE.keyCode !== keyCode) {
                 return
               }
@@ -183,7 +184,7 @@ export default class Commands {
       editorElement.classList.remove("intentions-list")
     })
     subscriptions.add(
-      disposableEvent(document.body, "mouseup", function () {
+      disposableEvent(document.body as unknown as TargetWithAddEventListener, "mouseup", function () {
         setTimeout(function () {
           subscriptions.dispose()
         }, 10)
