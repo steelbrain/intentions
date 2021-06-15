@@ -44,11 +44,11 @@ export default class ProvidersHighlight {
     // Setting this to infinity on purpose, cause the buffer position just marks visible column
     // according to element width
     visibleRange.end.column = Infinity
-    const promises = []
+    const promises: Promise<HighlightItem[]>[] = []
     this.providers.forEach(function (provider) {
       if (scopes.some((scope) => provider.grammarScopes.indexOf(scope) !== -1)) {
         promises.push(
-          new Promise(function (resolve) {
+          new Promise<HighlightItem[]>(function (resolve) {
             resolve(
               provider.getIntentions({
                 textEditor,
