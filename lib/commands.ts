@@ -18,6 +18,12 @@ const CORE_COMMANDS = new Set([
   "core:move-to-top",
   "core:move-to-bottom",
 ])
+
+type ShowListEvent = {
+  show: boolean
+  editor: TextEditor
+}
+
 export default class Commands {
   active:
     | {
@@ -87,7 +93,7 @@ export default class Commands {
 
           const { keyCode } = e.originalEvent
           subscriptions.add(
-            disposableEvent(document.body, "keyup", (upE) => {
+            disposableEvent(document.body, "keyup", (upE: KeyboardEvent) => {
               if (upE.keyCode !== keyCode) {
                 return
               }
@@ -271,7 +277,7 @@ export default class Commands {
   }
 
   async shouldListShow(editor: TextEditor): Promise<boolean> {
-    const event = {
+    const event: ShowListEvent = {
       show: false,
       editor,
     }
@@ -289,7 +295,7 @@ export default class Commands {
   }
 
   onListShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("list-show", function (event) {
+    return this.emitter.on("list-show", function (event: ShowListEvent) {
       return callback(event.editor).then(function (result) {
         event.show = Boolean(result)
       })
@@ -309,7 +315,7 @@ export default class Commands {
   }
 
   onHighlightsShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("highlights-show", function (event) {
+    return this.emitter.on("highlights-show", function (event: ShowListEvent) {
       return callback(event.editor).then(function (result) {
         event.show = Boolean(result)
       })
