@@ -41,7 +41,7 @@
     "lint": "eslint . --fix",
     "test.lint": "eslint .",
     "test": "npm run build && atom --test spec",
-    "dev": "npm run build -- --watch",
+    "dev": "tsc -p ./lib/tsconfig.json --watch",
     "build": "tsc -p ./lib/tsconfig.json || echo done"
   }
 }

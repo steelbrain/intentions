@@ -4,6 +4,7 @@ import type { TextEditor } from "atom"
 
 import { stoppingEvent } from "./helpers"
 import type { ListMovement } from "./types"
+import type { CommandEventExtended } from "./types/atom"
 
 // NOTE:
 // We don't *need* to add the intentions:hide command
@@ -39,7 +40,7 @@ export default class Commands {
   activate() {
     this.subscriptions.add(
       atom.commands.add("atom-text-editor:not([mini])", {
-        "intentions:show": (e) => {
+        "intentions:show": (e: CommandEventExtended) => {
           if (this.active && this.active.type === "list") {
             return
           }
@@ -73,11 +74,11 @@ export default class Commands {
         "intentions:hide": () => {
           this.processListHide()
         },
-        "intentions:highlight": (e) => {
+        "intentions:highlight": (e: CommandEventExtended<KeyboardEvent>) => {
           if (this.active && this.active.type === "highlight") {
             return
           }
-
+          e.abortKeyBinding()
           const subscriptions = new CompositeDisposable()
           this.processHighlightsShow(subscriptions)
 
