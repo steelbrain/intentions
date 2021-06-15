@@ -38,7 +38,7 @@ export default class ProvidersHighlight {
       return []
     }
 
-    const scopes = textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()
+    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()]
     scopes.push("*")
     const visibleRange = { ...textEditor.getBuffer().getRange() } as Range
     // Setting this to infinity on purpose, cause the buffer position just marks visible column

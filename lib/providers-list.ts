@@ -38,7 +38,7 @@ export default class ProvidersList {
       return []
     }
 
-    const scopes = textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()
+    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()]
     scopes.push("*")
     const promises: Promise<ListItem[]>[] = []
     this.providers.forEach(function (provider) {
