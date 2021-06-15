@@ -40,11 +40,11 @@ export default class ProvidersList {
 
     const scopes = textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()
     scopes.push("*")
-    const promises = []
+    const promises: Promise<ListItem[]>[] = []
     this.providers.forEach(function (provider) {
       if (scopes.some((scope) => provider.grammarScopes.indexOf(scope) !== -1)) {
         promises.push(
-          new Promise(function (resolve) {
+          new Promise<ListItem[]>(function (resolve) {
             resolve(
               provider.getIntentions({
                 textEditor,
