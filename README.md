@@ -1,6 +1,8 @@
 Intentions
 =========
 
+[![CI](https://github.com/steelbrain/intentions/actions/workflows/CI.yml/badge.svg)](https://github.com/steelbrain/intentions/actions/workflows/CI.yml)
+
 Intentions is a base package that provides an easy-to-use API to show intentions based in Atom.
 
 #### Usage
