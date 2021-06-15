@@ -89,7 +89,7 @@ export default class ProvidersHighlight {
     for (const intention of intentions) {
       const matchedText = textEditor.getTextInBufferRange(intention.range)
       const marker = textEditor.markBufferRange(intention.range)
-      const element = createElement(intention, matchedText.length)
+      const element = createElement(matchedText.length)
       intention.created({
         textEditor,
         element,

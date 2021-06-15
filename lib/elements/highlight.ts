@@ -1,7 +1,5 @@
-import type { HighlightItem } from "../types"
-
 export const PADDING_CHARACTER = " "
-export function create(intention: HighlightItem, length: number): HTMLElement {
+export function create(length: number): HTMLElement {
   let tries = 0
   const element = document.createElement("intention-inline")
   element.style.opacity = "0"
