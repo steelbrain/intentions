@@ -1,6 +1,6 @@
 /* @flow */
 
-import ListElement from "../lib/elements/list"
+import ListElement from "../dist/elements/list"
 import { createSuggestion } from "./helpers"
 
 describe("Intentions list element", function () {

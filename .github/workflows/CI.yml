@@ -27,8 +27,13 @@ jobs:
       - name: Install dependencies
         run: apm install
 
-      - name: Run tests 👩🏾‍💻
-        run: npm run test
+      # The tests are flaky
+      - name: Run tests
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 1
+          max_attempts: 3
+          command: npm run test
 
   Lint:
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'Prepare ')"
@@ -52,9 +57,6 @@ jobs:
 
       - name: Format ✨
         run: pnpm run test.format
-
-      - name: Flow
-        run: pnpm run test.flow
 
       - name: Lint
         run: pnpm run test.lint

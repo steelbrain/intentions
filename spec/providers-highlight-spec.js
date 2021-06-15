@@ -1,7 +1,7 @@
 /* @flow */
 
 import invariant from "assert"
-import ProvidersHighlight from "../lib/providers-highlight"
+import ProvidersHighlight from "../dist/providers-highlight"
 
 describe("ProvidersHighlight", function () {
   let providersHighlight

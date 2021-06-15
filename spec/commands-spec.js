@@ -2,7 +2,7 @@
 
 import { CompositeDisposable } from "sb-event-kit"
 import { it, beforeEach, wait } from "jasmine-fix"
-import Commands from "../lib/commands"
+import Commands from "../dist/commands"
 import { getKeyboardEvent } from "./helpers"
 
 describe("Commands", function () {
