@@ -3,13 +3,13 @@
 import ListElement from "../lib/elements/list"
 import { createSuggestion } from "./helpers"
 
-describe("Intentions list element", function() {
-  it("has a complete working lifecycle", function() {
+describe("Intentions list element", function () {
+  it("has a complete working lifecycle", function () {
     const element = new ListElement()
     const suggestions = [
       createSuggestion("Suggestion 1", jasmine.createSpy("suggestion.selected.0"), "someClass", "someIcon"),
       createSuggestion("Suggestion 2", jasmine.createSpy("suggestion.selected.1")),
-      createSuggestion("Suggestion 3", jasmine.createSpy("suggestion.selected.2"), "anotherClass")
+      createSuggestion("Suggestion 3", jasmine.createSpy("suggestion.selected.2"), "anotherClass"),
     ]
 
     const selected = jasmine.createSpy("suggestion.selected")
@@ -55,7 +55,7 @@ describe("Intentions list element", function() {
 
     rendered.refs.list.children[1].children[0].dispatchEvent(
       new MouseEvent("click", {
-        bubbles: true
+        bubbles: true,
       })
     )
     expect(selected).toHaveBeenCalledWith(suggestions[1])

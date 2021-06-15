@@ -1,5 +1,4 @@
-Intentions
-=========
+# Intentions
 
 [![CI](https://github.com/steelbrain/intentions/actions/workflows/CI.yml/badge.svg)](https://github.com/steelbrain/intentions/actions/workflows/CI.yml)
 
@@ -29,4 +28,5 @@ Here is what it looks like
 You can find docs about both of these in [Intentions Wiki](https://github.com/steelbrain/intentions/wiki/Intentions-API)
 
 #### License
+
 This package is licensed under the terms of MIT License, see the license file for more info.
