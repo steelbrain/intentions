@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "strict": false,
+    "strict": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
