@@ -22,7 +22,7 @@ export function processListItems(suggestions: Array<ListItem>): Array<ListItem> 
     return b.priority - a.priority
   })
 }
-export function showError(message: Error | string, detail: string | null | undefined = null) {
+export function showError(message: Error | string, detail?: string) {
   if (message instanceof Error) {
     detail = message.stack
     message = message.message
