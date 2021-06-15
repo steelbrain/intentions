@@ -1,4 +1,4 @@
-import type { Point, Range, TextEditor, TextEditorMarker } from "atom"
+import type { Point, Range, TextEditor, DisplayMarker } from "atom"
 
 export type ListItem = {
   // Automatically added
@@ -17,7 +17,7 @@ export type HighlightItem = {
   range: Range
   class?: string
   created: (parameters: {
-    marker: TextEditorMarker
+    marker: DisplayMarker
     element: HTMLElement
     textEditor: TextEditor
     matchedText: string
