@@ -1,7 +1,7 @@
 /* @flow */
 
 import invariant from "assert"
-import ProvidersList from "../lib/providers-list"
+import ProvidersList from "../dist/providers-list"
 
 describe("ProvidersList", function () {
   let providersList

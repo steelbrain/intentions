@@ -40,8 +40,8 @@
     "test.format": "prettier --check .",
     "lint": "eslint . --fix",
     "test.lint": "eslint .",
-    "test": "atom --test spec",
+    "test": "npm run build && atom --test spec",
     "dev": "npm run build -- --watch",
-    "build": "tsc -p ./lib/tsconfig.json"
+    "build": "tsc -p ./lib/tsconfig.json || echo done"
   }
 }

@@ -1,6 +1,6 @@
 "use babel"
 
-import { processListItems } from "../lib/helpers"
+import { processListItems } from "../dist/helpers"
 
 export function createSuggestion(text, selected, className = "", icon = "", process = true) {
   const suggestion = {
