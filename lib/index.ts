@@ -1,6 +1,5 @@
-/* @flow */
-
 import { Disposable } from "atom"
+
 import Intentions from "./main"
 import type { ListProvider, HighlightProvider } from "./types"
 
@@ -9,9 +8,11 @@ export default {
     this.intentions = new Intentions()
     this.intentions.activate()
   },
+
   deactivate() {
     this.intentions.dispose()
   },
+
   consumeListIntentions(provider: ListProvider | Array<ListProvider>) {
     const providers = [].concat(provider)
     providers.forEach((entry) => {
@@ -23,6 +24,7 @@ export default {
       })
     })
   },
+
   consumeHighlightIntentions(provider: HighlightProvider | Array<HighlightProvider>) {
     const providers = [].concat(provider)
     providers.forEach((entry) => {
