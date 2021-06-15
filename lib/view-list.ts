@@ -7,7 +7,7 @@ import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
   emitter: Emitter
-  element: ListElement
+  element: typeof ListElement
   subscriptions: CompositeDisposable
 
   constructor() {
