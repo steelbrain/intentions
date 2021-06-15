@@ -1,3 +1,18 @@
+### 2.0.0
+
+**Bug Fixes**
+
+- Allow selecting the underlying text when the intentions are highlighted (#85)
+- Fix the error with invalid points (#81)
+- Unify the keyboard shortcuts on all operating systems (#87):
+  - Use <kbd>ALT</kbd>+<kbd>ENTER</kbd> to open the intensions list and press <kbd>ENTER</kbd> (or select by mouse) to choose the action.
+  - To see the all available actions hold <kbd>CTRL</kbd> (<kbd>⌘</kbd> on macOS).
+- Update dependencies (#75, #80, #81)
+
+**Breaking Change**
+
+- keyboard shortcut on macOS is now the same as other operating systems (#87)
+
 #### 1.1.5
 
 - Remove cache introduced in v1.1.3
