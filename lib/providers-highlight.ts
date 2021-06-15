@@ -1,4 +1,4 @@
-import type { TextEditor, Range } from "atom"
+import type { TextEditor, Range, DisplayMarker } from "atom"
 
 import { provider as validateProvider, suggestionsShow as validateSuggestions } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
@@ -84,7 +84,7 @@ export default class ProvidersHighlight {
   }
 
   paint(textEditor: TextEditor, intentions: Array<HighlightItem>): () => void {
-    const markers = []
+    const markers: DisplayMarker[] = []
 
     for (const intention of intentions) {
       const matchedText = textEditor.getTextInBufferRange(intention.range)

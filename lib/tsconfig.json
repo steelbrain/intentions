@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
