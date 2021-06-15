@@ -12,7 +12,7 @@ export type ListItem = {
 }
 export type HighlightItem = {
   // Automatically added
-  __$sb_intentions_class: string
+  __$sb_intentions_class?: string
   // From providers
   range: Range
   class?: string
