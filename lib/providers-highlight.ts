@@ -1,4 +1,4 @@
-import type { TextEditor } from "atom"
+import type { TextEditor, Range } from "atom"
 
 import { provider as validateProvider, suggestionsShow as validateSuggestions } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
@@ -40,7 +40,7 @@ export default class ProvidersHighlight {
 
     const scopes = textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()
     scopes.push("*")
-    const visibleRange = { ...textEditor.getBuffer().getRange() }
+    const visibleRange = { ...textEditor.getBuffer().getRange() } as Range
     // Setting this to infinity on purpose, cause the buffer position just marks visible column
     // according to element width
     visibleRange.end.column = Infinity
