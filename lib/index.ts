@@ -3,37 +3,43 @@ import { Disposable } from "atom"
 import Intentions from "./main"
 import type { ListProvider, HighlightProvider } from "./types"
 
-export default {
-  activate() {
-    this.intentions = new Intentions()
-    this.intentions.activate()
-  },
+let intentions: Intentions | undefined = undefined
 
-  deactivate() {
-    this.intentions.dispose()
-  },
+export function activate() {
+  intentions = new Intentions()
+  intentions.activate()
+}
 
-  consumeListIntentions(provider: ListProvider | Array<ListProvider>) {
-    const providers = Array.isArray(provider) ? provider : [provider]
+export function deactivate() {
+  intentions?.dispose()
+}
+
+export function consumeListIntentions(provider: ListProvider | Array<ListProvider>) {
+  const providers = Array.isArray(provider) ? provider : [provider]
+  if (intentions === undefined) {
+    return
+  }
+  providers.forEach((entry) => {
+    ;(intentions as Intentions).consumeListProvider(entry)
+  })
+  return new Disposable(() => {
     providers.forEach((entry) => {
-      this.intentions.consumeListProvider(entry)
+      ;(intentions as Intentions).deleteListProvider(entry)
     })
-    return new Disposable(() => {
-      providers.forEach((entry) => {
-        this.intentions.deleteListProvider(entry)
-      })
-    })
-  },
+  })
+}
 
-  consumeHighlightIntentions(provider: HighlightProvider | Array<HighlightProvider>) {
-    const providers = Array.isArray(provider) ? provider : [provider]
+export function consumeHighlightIntentions(provider: HighlightProvider | Array<HighlightProvider>) {
+  const providers = Array.isArray(provider) ? provider : [provider]
+  if (intentions === undefined) {
+    return
+  }
+  providers.forEach((entry) => {
+    ;(intentions as Intentions).consumeHighlightProvider(entry)
+  })
+  return new Disposable(() => {
     providers.forEach((entry) => {
-      this.intentions.consumeHighlightProvider(entry)
+      ;(intentions as Intentions).deleteHighlightProvider(entry)
     })
-    return new Disposable(() => {
-      providers.forEach((entry) => {
-        this.intentions.deleteHighlightProvider(entry)
-      })
-    })
-  },
+  })
 }
