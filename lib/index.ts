@@ -14,7 +14,7 @@ export default {
   },
 
   consumeListIntentions(provider: ListProvider | Array<ListProvider>) {
-    const providers = [].concat(provider)
+    const providers = Array.isArray(provider) ? provider : [provider]
     providers.forEach((entry) => {
       this.intentions.consumeListProvider(entry)
     })
@@ -26,7 +26,7 @@ export default {
   },
 
   consumeHighlightIntentions(provider: HighlightProvider | Array<HighlightProvider>) {
-    const providers = [].concat(provider)
+    const providers = Array.isArray(provider) ? provider : [provider]
     providers.forEach((entry) => {
       this.intentions.consumeHighlightProvider(entry)
     })
