@@ -1,29 +1,41 @@
+import { render } from "solid-js/web"
+import { createMutable } from "solid-js"
 import { CompositeDisposable, Emitter } from "sb-event-kit"
 import type { Disposable } from "sb-event-kit"
 import type { TextEditor } from "atom"
 
-import ListElement from "./elements/list"
+import { Props as ListElementProps, ListElement } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
   emitter: Emitter
-  element: typeof ListElement
+  element: HTMLElement
   subscriptions: CompositeDisposable
+
+  // the props of ListElement component (this is reactive)
+  listElementProps: ListElementProps = createMutable({
+    suggestions: [],
+    selectCallback: (selectedSuggestion: ListItem) => {
+      this.emitter.emit("did-select", selectedSuggestion)
+      this.dispose()
+    },
+    movement: "move-to-top",
+    select: false,
+  })
 
   constructor() {
     this.emitter = new Emitter()
-    this.element = new ListElement()
+    this.element = document.createElement("div")
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
-    this.subscriptions.add(this.element)
   }
 
   activate(editor: TextEditor, suggestions: Array<ListItem>) {
-    this.element.render(suggestions, (selected) => {
-      this.emitter.emit("did-select", selected)
-      this.dispose()
-    })
-    this.element.move("move-to-top")
+    this.listElementProps.suggestions = suggestions
+
+    // render the list element component
+    render(() => ListElement(this.listElementProps), this.element)
+
     const bufferPosition = editor.getCursorBufferPosition()
     const marker = editor.markBufferRange([bufferPosition, bufferPosition], {
       invalidate: "never",
@@ -38,11 +50,12 @@ export default class ListView {
   }
 
   move(movement: ListMovement) {
-    this.element.move(movement)
+    this.listElementProps.movement = movement
   }
 
   select() {
-    this.element.select()
+    // runs only once
+    this.listElementProps.select = true
   }
 
   onDidSelect(callback: (...args: Array<any>) => any): Disposable {
