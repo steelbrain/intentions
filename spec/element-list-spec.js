@@ -6,29 +6,51 @@ import { createSuggestion } from "./helpers"
 import { createMutable } from "solid-js"
 import { render } from "solid-js/web"
 
+function getOlElement(suggestions) {
+  const rootElement = document.createElement("div")
+
+  const selectCallback = jasmine.createSpy("suggestion.selected")
+  const props = createMutable({ suggestions, selectCallback, movement: "move-to-top" })
+
+  render(() => ListElement(props), rootElement)
+
+  const intentionList = rootElement.querySelector("#intentions-list")
+  olElement = intentionList.firstElementChild
+  return { olElement, selectCallback, props }
+}
+
+export function click(elm: HTMLElement) {
+  try {
+    // @ts-ignore internal solid API
+    elm.$$click(new MouseEvent("click"))
+  } catch (e) {
+    elm.click()
+  }
+}
+
+const suggestions = [
+  createSuggestion("Suggestion 1", jasmine.createSpy("suggestion.selected.0"), "someClass", "someIcon"),
+  createSuggestion("Suggestion 2", jasmine.createSpy("suggestion.selected.1")),
+  createSuggestion("Suggestion 3", jasmine.createSpy("suggestion.selected.2"), "anotherClass"),
+]
+
 describe("Intentions list element", function () {
-  it("has a complete working lifecycle", function () {
-    const rootElement = document.createElement("div")
-
-    const suggestions = [
-      createSuggestion("Suggestion 1", jasmine.createSpy("suggestion.selected.0"), "someClass", "someIcon"),
-      createSuggestion("Suggestion 2", jasmine.createSpy("suggestion.selected.1")),
-      createSuggestion("Suggestion 3", jasmine.createSpy("suggestion.selected.2"), "anotherClass"),
-    ]
-    const selectCallback = jasmine.createSpy("suggestion.selected")
-    const props = createMutable({ suggestions, selectCallback, movement: "move-to-top" })
-
-    render(() => ListElement(props), rootElement)
-
-    const intentionList = rootElement.querySelector("#intentions-list")
-    const olElement = intentionList.firstElementChild
-
+  it("renders the list", () => {
+    const { olElement } = getOlElement(suggestions)
     expect(olElement.children.length).toBe(3)
     expect(olElement.children[0].textContent).toBe("Suggestion 1")
     expect(olElement.children[1].textContent).toBe("Suggestion 2")
     expect(olElement.children[2].textContent).toBe("Suggestion 3")
     expect(olElement.children[0].children[0].className).toBe("someClass icon icon-someIcon")
     expect(olElement.children[2].children[0].className).toBe("anotherClass")
+  })
+  it("handles click", function () {
+    const { olElement, selectCallback } = getOlElement(suggestions)
+    click(olElement.children[1].children[0])
+    expect(selectCallback).toHaveBeenCalledWith(suggestions[1])
+  })
+  it("handles movement", () => {
+    const { olElement, props } = getOlElement(suggestions)
 
     props.movement = "down"
 
@@ -54,12 +76,5 @@ describe("Intentions list element", function () {
     props.movement = "up"
 
     expect(suggestions[2].title).toBe(olElement.children[2].textContent)
-
-    olElement.children[1].children[0].dispatchEvent(
-      new MouseEvent("click", {
-        bubbles: true,
-      })
-    )
-    expect(selectCallback).toHaveBeenCalledWith(suggestions[1])
   })
 })
