@@ -7,7 +7,7 @@ export interface Props {
   suggestions: Array<ListItem>
   selectCallback: (suggestion: ListItem) => void
   movement?: ListMovement
-  select: boolean
+  select?: boolean
 }
 
 export function ListElement(props: Props) {
@@ -51,7 +51,7 @@ export function ListElement(props: Props) {
   // Runs the selection callback when the user confirms the selection using keyboard
   // Updating prop.select in the parent result in running this function
   createEffect(() => {
-    if (props.select) {
+    if (props.select == true) {
       const index = getActiveIndex()
       handleSelection(props.suggestions[index], index)
     }
