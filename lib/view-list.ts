@@ -1,10 +1,9 @@
 import { render } from "solid-js/web"
-import { createMutable } from "solid-js"
 import { CompositeDisposable, Emitter } from "sb-event-kit"
 import type { Disposable } from "sb-event-kit"
 import type { TextEditor } from "atom"
 
-import { Props as ListElementProps, ListElement } from "./elements/list"
+import { ListElement } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
@@ -13,21 +12,11 @@ export default class ListView {
   element: HTMLElement
   subscriptions: CompositeDisposable
 
-  // the props of ListElement component (this is reactive)
-  listElementProps: ListElementProps
+  setMovement?: (movement: ListMovement) => void
+  setConfirmed?: (confiremd: boolean) => void
 
-  constructor(suggestions: Array<ListItem> = []) {
+  constructor() {
     this.element = document.createElement("div")
-
-    this.listElementProps = createMutable({
-      suggestions,
-      selectCallback: (selectedSuggestion: ListItem) => {
-        this.emitter.emit("did-select", selectedSuggestion)
-        this.dispose()
-      },
-      movement: "move-to-top",
-      select: false,
-    })
 
     this.emitter = new Emitter()
     this.subscriptions = new CompositeDisposable()
@@ -35,10 +24,19 @@ export default class ListView {
   }
 
   activate(editor: TextEditor, suggestions: Array<ListItem>) {
-    this.listElementProps.suggestions = suggestions
+    const { component, setMovement, setConfirmed } = ListElement({
+      suggestions,
+      selectCallback: (selectedSuggestion: ListItem) => {
+        this.emitter.emit("did-select", selectedSuggestion)
+        this.dispose()
+      },
+    })
+    // store setters
+    this.setMovement = setMovement
+    this.setConfirmed = setConfirmed
 
     // render the list element component
-    render(() => ListElement(this.listElementProps), this.element)
+    render(() => component, this.element)
 
     const bufferPosition = editor.getCursorBufferPosition()
     const marker = editor.markBufferRange([bufferPosition, bufferPosition], {
@@ -54,12 +52,12 @@ export default class ListView {
   }
 
   move(movement: ListMovement) {
-    this.listElementProps.movement = movement
+    this.setMovement?.(movement)
   }
 
   select() {
     // runs only once
-    this.listElementProps.select = true
+    this.setConfirmed?.(true)
   }
 
   onDidSelect(callback: (...args: Array<any>) => any): Disposable {

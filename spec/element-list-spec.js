@@ -3,20 +3,20 @@ import "module-alias/register"
 
 import { ListElement } from "../dist/elements/list"
 import { createSuggestion } from "./helpers"
-import { createMutable } from "solid-js"
 import { render } from "solid-js/web"
 
 function getOlElement(suggestions) {
   const rootElement = document.createElement("div")
 
   const selectCallback = jasmine.createSpy("suggestion.selected")
-  const props = createMutable({ suggestions, selectCallback, movement: "move-to-top" })
 
-  render(() => ListElement(props), rootElement)
+  const { component, setMovement, setConfirmed } = ListElement({ suggestions, selectCallback, movement: "move-to-top" })
+
+  render(() => component, rootElement)
 
   const intentionList = rootElement.querySelector("#intentions-list")
   olElement = intentionList.firstElementChild
-  return { olElement, selectCallback, props }
+  return { olElement, selectCallback, setMovement, setConfirmed }
 }
 
 export function click(elm: HTMLElement) {
@@ -50,29 +50,29 @@ describe("Intentions list element", function () {
     expect(selectCallback).toHaveBeenCalledWith(suggestions[1])
   })
   it("handles movement", () => {
-    const { olElement, props } = getOlElement(suggestions)
+    const { olElement, setMovement } = getOlElement(suggestions)
 
-    props.movement = "down"
+    setMovement("down")
 
     expect(suggestions[0].title).toBe(olElement.children[0].textContent)
 
-    props.movement = "down"
+    setMovement("down")
 
     expect(suggestions[1].title).toBe(olElement.children[1].textContent)
 
-    props.movement = "down"
+    setMovement("down")
 
     expect(suggestions[2].title).toBe(olElement.children[2].textContent)
 
-    props.movement = "up"
+    setMovement("up")
 
     expect(suggestions[1].title).toBe(olElement.children[1].textContent)
 
-    props.movement = "up"
+    setMovement("up")
 
     expect(suggestions[0].title).toBe(olElement.children[0].textContent)
 
-    props.movement = "up"
+    setMovement("up")
 
     expect(suggestions[2].title).toBe(olElement.children[2].textContent)
   })

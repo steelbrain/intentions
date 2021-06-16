@@ -1,13 +1,11 @@
-import { createEffect, createSignal, createSelector, For } from "solid-js"
+import { createSignal, createSelector, For, createComputed, on } from "solid-js"
 
 import { $class } from "../helpers"
-import type { ListMovement, ListItem } from "../types"
+import type { ListItem } from "../types"
 
 export interface Props {
   suggestions: Array<ListItem>
   selectCallback: (suggestion: ListItem) => void
-  movement?: ListMovement
-  select?: boolean
 }
 
 export function ListElement(props: Props) {
@@ -15,8 +13,10 @@ export function ListElement(props: Props) {
   const [getActiveIndex, setActiveIndex] = createSignal(-1)
   // current active id
   const isSelected = createSelector(getActiveIndex)
-  // infinite loop preventor
-  const [getMoveHandled, setMoveHandled] = createSignal(false)
+  // movement state
+  const [getMovement, setMovement] = createSignal("move-to-top")
+  // selected state
+  const [getConfirmed, setConfirmed] = createSignal(false)
 
   function handleSelection(suggestion: ListItem, index: number) {
     // call its associated callback
@@ -26,23 +26,19 @@ export function ListElement(props: Props) {
   }
 
   function handleMove() {
-    // prevent infinite loop in handleMove
-    if (getMoveHandled()) {
-      return
-    }
-
     const suggestionsCount = props.suggestions.length
 
     const prevIndex = getActiveIndex()
     let index = prevIndex
 
-    if (props.movement === "up") {
+    const movement = getMovement()
+    if (movement === "up") {
       index--
-    } else if (props.movement === "down") {
+    } else if (movement === "down") {
       index++
-    } else if (props.movement === "move-to-top") {
+    } else if (movement === "move-to-top") {
       index = 0
-    } else if (props.movement === "move-to-bottom") {
+    } else if (movement === "move-to-bottom") {
       index = suggestionsCount
     }
 
@@ -56,19 +52,22 @@ export function ListElement(props: Props) {
     if (index !== prevIndex) {
       setActiveIndex(index)
     }
-    setMoveHandled(true)
+
+    // unset the movement to allow solid to check the next movement
+    setMovement("")
   }
 
-  createEffect(() => {
-    if (props.select == true) {
-      // Runs the selection callback when the user confirms the selection using keyboard
-      // Updating prop.select in the parent result in running this function
-      const index = getActiveIndex()
-      handleSelection(props.suggestions[index], index)
-    } else {
-      handleMove()
-    }
-  })
+  createComputed(
+    on(getConfirmed, () => {
+      if (getConfirmed()) {
+        // Runs the selection callback when the user confirms the selection using keyboard
+        // Updating prop.select in the parent result in running this function
+        const index = getActiveIndex()
+        handleSelection(props.suggestions[index], index)
+      }
+    })
+  )
+  createComputed(on(getMovement, handleMove))
 
   let className = "select-list popover-list"
   // add scrolling if more than 7 itmes
@@ -76,7 +75,7 @@ export function ListElement(props: Props) {
     className += " intentions-scroll"
   }
 
-  return (
+  const component = (
     <div class={className} id="intentions-list">
       <ol className="list-group">
         <For each={props.suggestions}>
@@ -99,4 +98,5 @@ export function ListElement(props: Props) {
       </ol>
     </div>
   )
+  return { component, setMovement, setConfirmed }
 }
