@@ -17,8 +17,10 @@
     "solid-js": "^0.26.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.14.5",
     "@types/atom": "latest",
     "@types/jasmine": "v1",
+    "babel-preset-atomic": "^4.1.0",
     "babel-preset-solid": "^0.26.5",
     "build-commit": "^0.1.4",
     "cross-env": "^7.0.3",
@@ -46,9 +48,11 @@
     "test.format": "prettier --check .",
     "lint": "eslint . --fix",
     "test.lint": "eslint .",
-    "test": "npm run build && atom --test spec",
+    "test": "npm run build.unit && npm run build && npm run test.only",
+    "test.only": "atom --test spec",
     "clean": "shx rm -rf ./dist",
     "types": "tsc -p ./lib/tsconfig.json --noEmit",
+    "build.unit": "(npm run types || echo done) && babel ./lib --out-dir ./dist --config-file ./babel.unit.config.json --extensions .tsx,.ts",
     "dev": "cross-env NODE_ENV=development parcel watch --target main ./lib/index.ts",
     "build": "cross-env NODE_ENV=production parcel build --target main ./lib/index.ts --detailed-report",
     "build-commit": "build-commit -o dist"
