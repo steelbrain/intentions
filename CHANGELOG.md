@@ -1,3 +1,15 @@
+### 2.1.0
+
+- Convert to TypeScript :tada: (#88)
+- Convert the intentions list to Solid-js :tada: (#90)
+
+**Bug fixes**
+
+- Improve the load-time and run-time performance by using Parcel and Solid-js (#90)
+- Update dependencies (#88, #90)
+- Preserve the original scopes of the editor (#88)
+- Other miscellaneous changes (#88, #89, #90)
+
 ### 2.0.0
 
 **Bug Fixes**
@@ -45,31 +57,31 @@
 
 #### 1.0.5
 
-* Change OSX keybinding from `cmd` to `alt` again to match IntelliJ IDEs
+- Change OSX keybinding from `cmd` to `alt` again to match IntelliJ IDEs
 
 #### 1.0.4
 
-* Change OSX keybinding from `alt` to `cmd`
+- Change OSX keybinding from `alt` to `cmd`
 
 #### 1.0.3
 
-* Automatically update higlight decoration lengths instead of making API consumers do that
+- Automatically update higlight decoration lengths instead of making API consumers do that
 
 #### 1.0.2
 
-* Fix compatibility with fonts using ligas
+- Fix compatibility with fonts using ligas
 
 #### 1.0.1
 
-* Minor UI tweak in menu
-* Dismiss menu on mouse click
+- Minor UI tweak in menu
+- Dismiss menu on mouse click
 
 #### 1.0.0
 
-* Improved package stability and performance
-* Rewrote intentions:list providers implementation
-* Implemented intentions:highlight service
+- Improved package stability and performance
+- Rewrote intentions:list providers implementation
+- Implemented intentions:highlight service
 
 #### Pre 1.0.0
 
-* Initial API implemented
+- Initial API implemented
