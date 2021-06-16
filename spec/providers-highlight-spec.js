@@ -1,6 +1,4 @@
 /* @flow */
-import "module-alias/register"
-
 import invariant from "assert"
 import ProvidersHighlight from "../dist/providers-highlight"
 
