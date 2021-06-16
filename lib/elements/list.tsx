@@ -15,6 +15,8 @@ export function ListElement(props: Props) {
   const [getActiveIndex, setActiveIndex] = createSignal(-1)
   // current active id
   const isSelected = createSelector(getActiveIndex)
+  // infinite loop preventor
+  const [getMoveHandled, setMoveHandled] = createSignal(false)
 
   function handleSelection(suggestion: ListItem, index: number) {
     // call its associated callback
@@ -24,6 +26,11 @@ export function ListElement(props: Props) {
   }
 
   function handleMove() {
+    // prevent infinite loop in handleMove
+    if (getMoveHandled()) {
+      return
+    }
+
     const suggestionsCount = props.suggestions.length
 
     const prevIndex = getActiveIndex()
@@ -49,6 +56,7 @@ export function ListElement(props: Props) {
     if (index !== prevIndex) {
       setActiveIndex(index)
     }
+    setMoveHandled(true)
   }
 
   createEffect(() => {

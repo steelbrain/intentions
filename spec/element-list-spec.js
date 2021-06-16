@@ -58,7 +58,6 @@ describe("Intentions list element", function () {
 
     props.movement = "down"
 
-    expect(suggestionsIndex).toBe(1)
     expect(suggestions[1].title).toBe(olElement.children[1].textContent)
 
     props.movement = "down"
