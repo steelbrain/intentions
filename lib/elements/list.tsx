@@ -14,7 +14,7 @@ export function ListElement(props: Props) {
   // current active id
   const isSelected = createSelector(getActiveIndex)
   // movement state
-  const [getMovement, setMovement] = createSignal("move-to-top")
+  const [getMovement, setMovement] = createSignal<string | undefined>("move-to-top")
   // selected state
   const [getConfirmed, setConfirmed] = createSignal(false)
 
@@ -54,7 +54,7 @@ export function ListElement(props: Props) {
     }
 
     // unset the movement to allow solid to check the next movement
-    setMovement("")
+    setMovement(undefined)
   }
 
   createComputed(
