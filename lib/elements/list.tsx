@@ -1,5 +1,4 @@
 import { createComputed, createEffect, createSignal, createSelector, For } from "solid-js"
-import { scrollIntoViewIfNeeded } from "atom-ide-base/src-commons-ui/scrollIntoView"
 
 import { $class } from "../helpers"
 import type { ListMovement, ListItem } from "../types"
@@ -17,9 +16,7 @@ export function ListElement(props: Props) {
   // current active id
   const isSelected = createSelector(getActiveIndex)
 
-  function handleSelection(active: HTMLSpanElement, suggestion: ListItem, index: number) {
-    // scroll into  for the current selected element
-    scrollIntoViewIfNeeded(active, false)
+  function handleSelection(suggestion: ListItem, index: number) {
     // call its associated callback
     props.selectCallback(suggestion)
     // store it in the signal
@@ -55,7 +52,8 @@ export function ListElement(props: Props) {
   // Updating prop.select in the parent result in running this function
   createEffect(() => {
     if (props.select) {
-      props.selectCallback(props.suggestions[getActiveIndex()])
+      const index = getActiveIndex()
+      handleSelection(props.suggestions[index], index)
     }
   })
 
@@ -63,6 +61,7 @@ export function ListElement(props: Props) {
   createComputed(handleMove)
 
   let className = "select-list popover-list"
+  // add scrolling if more than 7 itmes
   if (props.suggestions.length > 7) {
     className += " intentions-scroll"
   }
@@ -73,15 +72,13 @@ export function ListElement(props: Props) {
         <For each={props.suggestions}>
           {(suggestion, getIndex) => {
             const index = getIndex()
-            let liRef: HTMLSpanElement | undefined
             return (
               <li class={isSelected(index) ? "selected" : ""}>
                 <span
                   className={suggestion[$class]}
                   onClick={() => {
-                    handleSelection(liRef!, suggestion, index)
+                    handleSelection(suggestion, index)
                   }}
-                  ref={liRef}
                 >
                   {suggestion.title}
                 </span>
