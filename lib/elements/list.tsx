@@ -1,4 +1,4 @@
-import { createComputed, createEffect, createSignal, createSelector, For } from "solid-js"
+import { createEffect, createSignal, createSelector, For } from "solid-js"
 
 import { $class } from "../helpers"
 import type { ListMovement, ListItem } from "../types"
@@ -26,7 +26,8 @@ export function ListElement(props: Props) {
   function handleMove() {
     const suggestionsCount = props.suggestions.length
 
-    let index = getActiveIndex()
+    const prevIndex = getActiveIndex()
+    let index = prevIndex
 
     if (props.movement === "up") {
       index--
@@ -45,20 +46,21 @@ export function ListElement(props: Props) {
       index = suggestionsCount + index
     }
 
-    setActiveIndex(index)
+    if (index !== prevIndex) {
+      setActiveIndex(index)
+    }
   }
 
-  // Runs the selection callback when the user confirms the selection using keyboard
-  // Updating prop.select in the parent result in running this function
   createEffect(() => {
     if (props.select == true) {
+      // Runs the selection callback when the user confirms the selection using keyboard
+      // Updating prop.select in the parent result in running this function
       const index = getActiveIndex()
       handleSelection(props.suggestions[index], index)
+    } else {
+      handleMove()
     }
   })
-
-  // TODO verify that it works
-  createComputed(handleMove)
 
   let className = "select-list popover-list"
   // add scrolling if more than 7 itmes
