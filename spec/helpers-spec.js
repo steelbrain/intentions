@@ -1,4 +1,5 @@
 /* @flow */
+import "module-alias/register"
 
 import * as Helpers from "../dist/helpers"
 import type { ListItem } from "../dist/types"

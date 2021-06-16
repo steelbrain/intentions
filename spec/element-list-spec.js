@@ -1,4 +1,5 @@
 /* @flow */
+import "module-alias/register"
 
 import ListElement from "../dist/elements/list"
 import { createSuggestion } from "./helpers"
