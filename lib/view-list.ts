@@ -9,23 +9,27 @@ import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
   emitter: Emitter
+  // root element
   element: HTMLElement
   subscriptions: CompositeDisposable
 
   // the props of ListElement component (this is reactive)
-  listElementProps: ListElementProps = createMutable({
-    suggestions: [],
-    selectCallback: (selectedSuggestion: ListItem) => {
-      this.emitter.emit("did-select", selectedSuggestion)
-      this.dispose()
-    },
-    movement: "move-to-top",
-    select: false,
-  })
+  listElementProps: ListElementProps
 
-  constructor() {
-    this.emitter = new Emitter()
+  constructor(suggestions: Array<ListItem> = []) {
     this.element = document.createElement("div")
+
+    this.listElementProps = createMutable({
+      suggestions,
+      selectCallback: (selectedSuggestion: ListItem) => {
+        this.emitter.emit("did-select", selectedSuggestion)
+        this.dispose()
+      },
+      movement: "move-to-top",
+      select: false,
+    })
+
+    this.emitter = new Emitter()
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
   }
