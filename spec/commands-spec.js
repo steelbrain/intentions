@@ -1,4 +1,5 @@
 /* @flow */
+import "module-alias/register"
 
 import { CompositeDisposable } from "sb-event-kit"
 import { it, beforeEach, wait } from "jasmine-fix"

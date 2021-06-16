@@ -1,7 +1,8 @@
 export const PADDING_CHARACTER = " "
 export function create(length: number): HTMLElement {
   let tries = 0
-  const element = document.createElement("intention-inline")
+  const element = document.createElement("div")
+  element.className = "intentions-inline"
   element.style.opacity = "0"
   element.textContent = PADDING_CHARACTER.repeat(length)
 

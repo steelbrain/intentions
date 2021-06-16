@@ -25,7 +25,9 @@ jobs:
           channel: ${{ matrix.atom_channel }}
 
       - name: Install dependencies
-        run: apm install
+        run: |
+          apm install --production
+          npm install --only=dev
 
       # The tests are flaky
       - name: Run tests

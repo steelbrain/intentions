@@ -1,29 +1,43 @@
+import { render } from "solid-js/web"
 import { CompositeDisposable, Emitter } from "sb-event-kit"
 import type { Disposable } from "sb-event-kit"
 import type { TextEditor } from "atom"
 
-import ListElement from "./elements/list"
+import { ListElement } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
   emitter: Emitter
-  element: typeof ListElement
+  // root element
+  element: HTMLElement
   subscriptions: CompositeDisposable
 
+  setMovement?: (movement: ListMovement) => void
+  setConfirmed?: (confiremd: boolean) => void
+
   constructor() {
+    this.element = document.createElement("div")
+
     this.emitter = new Emitter()
-    this.element = new ListElement()
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
-    this.subscriptions.add(this.element)
   }
 
   activate(editor: TextEditor, suggestions: Array<ListItem>) {
-    this.element.render(suggestions, (selected) => {
-      this.emitter.emit("did-select", selected)
-      this.dispose()
+    const { component, setMovement, setConfirmed } = ListElement({
+      suggestions,
+      selectCallback: (selectedSuggestion: ListItem) => {
+        this.emitter.emit("did-select", selectedSuggestion)
+        this.dispose()
+      },
     })
-    this.element.move("move-to-top")
+    // store setters
+    this.setMovement = setMovement
+    this.setConfirmed = setConfirmed
+
+    // render the list element component
+    render(() => component, this.element)
+
     const bufferPosition = editor.getCursorBufferPosition()
     const marker = editor.markBufferRange([bufferPosition, bufferPosition], {
       invalidate: "never",
@@ -38,11 +52,12 @@ export default class ListView {
   }
 
   move(movement: ListMovement) {
-    this.element.move(movement)
+    this.setMovement?.(movement)
   }
 
   select() {
-    this.element.select()
+    // runs only once
+    this.setConfirmed?.(true)
   }
 
   onDidSelect(callback: (...args: Array<any>) => any): Disposable {
