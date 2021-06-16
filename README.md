@@ -9,6 +9,8 @@ Intentions is a base package that provides an easy-to-use API to show intentions
 - Use <kbd>ALT</kbd>+<kbd>ENTER</kbd> to open the intensions list and press <kbd>ENTER</kbd> (or select by mouse) to choose the action.
 - To see the all available actions hold <kbd>CTRL</kbd> (<kbd>⌘</kbd> on macOS).
 
+![intentions-list](https://user-images.githubusercontent.com/16418197/122294624-dd304100-cebd-11eb-9232-d015cde1516f.gif)
+
 #### APIs
 
 Intentions provides two kinds of APIs, there's Intentions List API that allows you to add items
