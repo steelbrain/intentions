@@ -8,7 +8,8 @@
   "repository": "https://github.com/steelbrain/intentions",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.0.0 <2.0.0"
+    "atom": ">=1.55 <2.0.0",
+    "electron": ">=6.x"
   },
   "dependencies": {
     "disposable-event": "^2.0.0",

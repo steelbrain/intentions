@@ -11,6 +11,9 @@ Intentions is a base package that provides an easy-to-use API to show intentions
 
 ![intentions-list](https://user-images.githubusercontent.com/16418197/122294624-dd304100-cebd-11eb-9232-d015cde1516f.gif)
 
+**Note**: This package does not work on older Atoms. You should install the **latest version of Atom** from:
+https://atom.io/
+
 #### APIs
 
 Intentions provides two kinds of APIs, there's Intentions List API that allows you to add items

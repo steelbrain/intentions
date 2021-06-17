@@ -1,3 +1,7 @@
+### 2.1.1
+
+- Warn the users about using old Atom and point them to https://atom.io/
+
 ### 2.1.0
 
 - Convert to TypeScript :tada: (#88)
