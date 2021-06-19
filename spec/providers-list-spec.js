@@ -2,7 +2,7 @@
 import "module-alias/register"
 
 import invariant from "assert"
-import ProvidersList from "../dist/providers-list"
+import { ProvidersList } from "../dist/providers-list"
 
 describe("ProvidersList", function () {
   let providersList

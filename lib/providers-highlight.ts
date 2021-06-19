@@ -4,7 +4,7 @@ import { provider as validateProvider, suggestionsShow as validateSuggestions } 
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
-export default class ProvidersHighlight {
+export class ProvidersHighlight {
   number: number
   providers: Set<HighlightProvider>
 

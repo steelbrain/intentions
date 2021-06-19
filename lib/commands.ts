@@ -27,7 +27,7 @@ type ShowListEvent = {
   editor: TextEditor
 }
 
-export default class Commands {
+export class Commands {
   active: {
     type: "list" | "highlight"
     subscriptions: CompositeDisposable

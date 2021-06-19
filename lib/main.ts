@@ -1,13 +1,13 @@
 import { CompositeDisposable } from "sb-event-kit"
 import { Disposable } from "atom"
 
-import Commands from "./commands"
-import ListView from "./view-list"
-import ProvidersList from "./providers-list"
-import ProvidersHighlight, { paint } from "./providers-highlight"
+import { Commands } from "./commands"
+import { ListView } from "./view-list"
+import { ProvidersList } from "./providers-list"
+import { paint, ProvidersHighlight } from "./providers-highlight"
 import type { ListProvider, HighlightProvider } from "./types"
 
-export default class Intentions {
+export class Intentions {
   active: Disposable | null | undefined
   commands: Commands
   providersList: ProvidersList

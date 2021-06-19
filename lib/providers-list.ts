@@ -4,7 +4,7 @@ import { processListItems } from "./helpers"
 import { provider as validateProvider, suggestionsList as validateSuggestions } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
-export default class ProvidersList {
+export class ProvidersList {
   number: number
   providers: Set<ListProvider>
 

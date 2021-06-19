@@ -6,7 +6,7 @@ import type { Disposable, TextEditor } from "atom"
 import { ListElement, Refs as ListElementRefs } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
-export default class ListView {
+export class ListView {
   emitter: Emitter
   // root element
   element: HTMLElement
