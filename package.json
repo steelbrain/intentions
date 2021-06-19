@@ -64,7 +64,7 @@
       "includeNodeModules": {
         "atom": false,
         "electron": false,
-        "disposable-event": false
+        "event-kit": false
       },
       "outputFormat": "commonjs",
       "isLibrary": true
