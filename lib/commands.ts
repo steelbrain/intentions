@@ -135,7 +135,7 @@ export default class Commands {
     )
   }
 
-  stoppingEvent(callback: (event: Event) => any): (event: Event) => void {
+  stoppingEvent(callback: (event: Event) => void): (event: Event) => void {
     return (event: Event) => {
       event.stopImmediatePropagation()
       callback.call(this, event)
@@ -305,15 +305,15 @@ export default class Commands {
     })
   }
 
-  onListHide(callback: () => any) {
+  onListHide(callback: () => void) {
     return this.emitter.on("list-hide", callback)
   }
 
-  onListMove(callback: (movement: ListMovement) => any) {
+  onListMove(callback: (movement: ListMovement) => void) {
     return this.emitter.on("list-move", callback)
   }
 
-  onListConfirm(callback: () => any) {
+  onListConfirm(callback: () => void) {
     return this.emitter.on("list-confirm", callback)
   }
 
@@ -325,7 +325,7 @@ export default class Commands {
     })
   }
 
-  onHighlightsHide(callback: () => any) {
+  onHighlightsHide(callback: () => void) {
     return this.emitter.on("highlights-hide", callback)
   }
 

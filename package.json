@@ -53,7 +53,7 @@
     "test.only": "atom --test spec",
     "clean": "shx rm -rf ./dist",
     "types": "tsc -p ./lib/tsconfig.json --noEmit",
-    "build.unit": "(npm run types || echo done) && babel ./lib --out-dir ./dist --config-file ./babel.unit.config.json --extensions .tsx,.ts",
+    "build.unit": "npm run types && babel ./lib --out-dir ./dist --config-file ./babel.unit.config.json --extensions .tsx,.ts",
     "dev": "cross-env NODE_ENV=development parcel watch --target main ./lib/index.ts",
     "build": "cross-env NODE_ENV=production parcel build --target main ./lib/index.ts --detailed-report",
     "build-commit": "build-commit -o dist"
