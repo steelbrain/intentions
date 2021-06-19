@@ -14,13 +14,13 @@ specifiers:
   module-alias: ^2.2.2
   parcel: ^2.0.0-beta.3.1
   prettier-config-atomic: ^2.0.5
-  sb-event-kit: ^3.0.0
+  sb-event-kit: ^3.1.0
   solid-js: ^0.26.5
   typescript: ^4.3.4
 
 dependencies:
   disposable-event: 2.0.0
-  sb-event-kit: 3.0.0
+  sb-event-kit: 3.1.0
   solid-js: 0.26.5
 
 devDependencies:
@@ -7217,8 +7217,8 @@ packages:
       xmlchars: 2.2.0
     dev: true
 
-  /sb-event-kit/3.0.0:
-    resolution: {integrity: sha1-Deq26KLZ3a1zN157g9qAv8kQXSQ=}
+  /sb-event-kit/3.1.0:
+    resolution: {integrity: sha512-66OAKSQHGYEyfsdWZTiig2wt8i0Z/8hDmgsvWtwWh12YRxloSFM+lWAJ6JAeMEOb+pYXop5rFJ0BOD94XwrHRA==}
     dev: false
 
   /semver/5.7.1:
