@@ -1,4 +1,5 @@
-import { CompositeDisposable, Disposable } from "sb-event-kit"
+import { CompositeDisposable } from "sb-event-kit"
+import { Disposable } from "atom"
 
 import Commands from "./commands"
 import ListView from "./view-list"

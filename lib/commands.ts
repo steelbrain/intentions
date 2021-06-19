@@ -1,5 +1,6 @@
 import disposableEvent from "disposable-event"
-import { CompositeDisposable, Disposable, Emitter } from "sb-event-kit"
+import { CompositeDisposable } from "sb-event-kit"
+import { Emitter, Disposable } from "atom"
 import type { TextEditor } from "atom"
 
 import type { ListMovement } from "./types"
