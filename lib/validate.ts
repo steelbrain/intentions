@@ -11,7 +11,7 @@ export function provider(entry: ListProvider | HighlightProvider) {
     message = "Invalid or no getIntentions found on provider"
   }
 
-  if (message) {
+  if (message !== undefined) {
     console.log("[Intentions] Invalid provider", entry)
     throw new Error(message)
   }
@@ -30,7 +30,7 @@ export function suggestionsList(suggestions: Array<ListItem>): Array<ListItem> {
         message = "Invalid or no selected found on intention"
       }
 
-      if (message) {
+      if (message !== undefined) {
         console.log("[Intentions] Invalid suggestion of type list", suggestion)
         throw new Error(message)
       }
@@ -49,13 +49,13 @@ export function suggestionsShow(suggestions: Array<HighlightItem>): Array<Highli
 
       if (typeof suggestion.range !== "object" || !suggestion.range) {
         message = "Invalid or no range found on intention"
-      } else if (suggestion.class && typeof suggestion.class !== "string") {
+      } else if (suggestion.class !== undefined && typeof suggestion.class !== "string") {
         message = "Invalid class found on intention"
       } else if (typeof suggestion.created !== "function") {
         message = "Invalid or no created found on intention"
       }
 
-      if (message) {
+      if (message !== undefined) {
         console.log("[Intentions] Invalid suggestion of type show", suggestion)
         throw new Error(message)
       }

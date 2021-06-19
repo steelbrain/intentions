@@ -34,7 +34,7 @@ export default class ProvidersHighlight {
     const editorPath = textEditor.getPath()
     const bufferPosition = textEditor.getCursorBufferPosition()
 
-    if (!editorPath) {
+    if (editorPath === undefined) {
       return []
     }
 
