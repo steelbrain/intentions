@@ -83,42 +83,49 @@ export default class ProvidersHighlight {
     return results
   }
 
-  paint(textEditor: TextEditor, intentions: Array<HighlightItem>): () => void {
-    const markers: DisplayMarker[] = []
-
-    for (const intention of intentions) {
-      const matchedText = textEditor.getTextInBufferRange(intention.range)
-      const marker = textEditor.markBufferRange(intention.range)
-      const element = createElement(matchedText.length)
-      intention.created({
-        textEditor,
-        element,
-        marker,
-        matchedText,
-      })
-      textEditor.decorateMarker(marker, {
-        type: "overlay",
-        position: "tail",
-        item: element,
-      })
-      marker.onDidChange(function ({ newHeadBufferPosition: start, oldTailBufferPosition: end }) {
-        element.textContent = PADDING_CHARACTER.repeat(textEditor.getTextInBufferRange([start, end]).length)
-      })
-      markers.push(marker)
-    }
-
-    return function () {
-      markers.forEach(function (marker) {
-        try {
-          marker.destroy()
-        } catch (_) {
-          /* No Op */
-        }
-      })
-    }
+  /* eslint-disable class-methods-use-this */
+  /** @deprecated Use the exported function */
+  paint(...args: Parameters<typeof paint>): ReturnType<typeof paint> {
+    return paint(...args)
   }
+  /* eslint-enable class-methods-use-this */
 
   dispose() {
     this.providers.clear()
+  }
+}
+
+export function paint(textEditor: TextEditor, intentions: Array<HighlightItem>): () => void {
+  const markers: DisplayMarker[] = []
+
+  for (const intention of intentions) {
+    const matchedText = textEditor.getTextInBufferRange(intention.range)
+    const marker = textEditor.markBufferRange(intention.range)
+    const element = createElement(matchedText.length)
+    intention.created({
+      textEditor,
+      element,
+      marker,
+      matchedText,
+    })
+    textEditor.decorateMarker(marker, {
+      type: "overlay",
+      position: "tail",
+      item: element,
+    })
+    marker.onDidChange(function ({ newHeadBufferPosition: start, oldTailBufferPosition: end }) {
+      element.textContent = PADDING_CHARACTER.repeat(textEditor.getTextInBufferRange([start, end]).length)
+    })
+    markers.push(marker)
+  }
+
+  return function () {
+    markers.forEach(function (marker) {
+      try {
+        marker.destroy()
+      } catch (_) {
+        /* No Op */
+      }
+    })
   }
 }

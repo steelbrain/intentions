@@ -3,7 +3,7 @@ import { CompositeDisposable, Disposable } from "sb-event-kit"
 import Commands from "./commands"
 import ListView from "./view-list"
 import ProvidersList from "./providers-list"
-import ProvidersHighlight from "./providers-highlight"
+import ProvidersHighlight, { paint } from "./providers-highlight"
 import type { ListProvider, HighlightProvider } from "./types"
 
 export default class Intentions {
@@ -69,7 +69,7 @@ export default class Intentions {
         return false
       }
 
-      const painted = this.providersHighlight.paint(textEditor, results)
+      const painted = paint(textEditor, results)
       const subscriptions = new CompositeDisposable()
       subscriptions.add(() => {
         if (this.active === subscriptions) {
