@@ -69,9 +69,7 @@ export default class Commands {
             subscriptions.add(
               atom.keymaps.onDidMatchBinding(function ({ binding }) {
                 matched = matched && CORE_COMMANDS.has(binding.command)
-              })
-            )
-            subscriptions.add(
+              }),
               disposableEvent(document.body as unknown as TargetWithAddEventListener, "keyup", () => {
                 if (matched) {
                   return
@@ -84,9 +82,7 @@ export default class Commands {
           })
           await processListShowP
         },
-        "intentions:hide": () => {
-          this.processListHide()
-        },
+        "intentions:hide": this.processListHide,
         "intentions:highlight": async (e: CommandEventExtended<KeyboardEvent>) => {
           if (this.active?.type === "highlight") {
             return
@@ -112,31 +108,16 @@ export default class Commands {
           )
           await processHighlightsShowP
         },
-      })
-    )
-    this.subscriptions.add(
+      }),
+
       atom.commands.add("atom-text-editor.intentions-list:not([mini])", {
-        "intentions:confirm": this.stoppingEvent(() => {
-          this.processListConfirm()
-        }),
-        "core:move-up": this.stoppingEvent(() => {
-          this.processListMove("up")
-        }),
-        "core:move-down": this.stoppingEvent(() => {
-          this.processListMove("down")
-        }),
-        "core:page-up": this.stoppingEvent(() => {
-          this.processListMove("page-up")
-        }),
-        "core:page-down": this.stoppingEvent(() => {
-          this.processListMove("page-down")
-        }),
-        "core:move-to-top": this.stoppingEvent(() => {
-          this.processListMove("move-to-top")
-        }),
-        "core:move-to-bottom": this.stoppingEvent(() => {
-          this.processListMove("move-to-bottom")
-        }),
+        "intentions:confirm": this.stoppingEvent(this.processListConfirm),
+        "core:move-up": this.stoppingEvent(() => this.processListMove("up")),
+        "core:move-down": this.stoppingEvent(() => this.processListMove("down")),
+        "core:page-up": this.stoppingEvent(() => this.processListMove("page-up")),
+        "core:page-down": this.stoppingEvent(() => this.processListMove("page-down")),
+        "core:move-to-top": this.stoppingEvent(() => this.processListMove("move-to-top")),
+        "core:move-to-bottom": this.stoppingEvent(() => this.processListMove("move-to-bottom")),
       })
     )
   }
@@ -183,15 +164,15 @@ export default class Commands {
       type: "list",
       subscriptions,
     }
-    subscriptions.add(() => {
-      if (this.active !== null && this.active.type === "list" && this.active.subscriptions === subscriptions) {
-        this.processListHide()
-        this.active = null
-      }
-
-      editorElement.classList.remove("intentions-list")
-    })
     subscriptions.add(
+      () => {
+        if (this.active !== null && this.active.type === "list" && this.active.subscriptions === subscriptions) {
+          this.processListHide()
+          this.active = null
+        }
+
+        editorElement.classList.remove("intentions-list")
+      },
       disposableEvent(document.body as unknown as TargetWithAddEventListener, "mouseup", function () {
         setTimeout(function () {
           subscriptions.dispose()
