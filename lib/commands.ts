@@ -300,10 +300,10 @@ export default class Commands {
   }
 
   onListShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("list-show", function (event: ShowListEvent) {
-      return callback(event.editor).then(function (result) {
-        event.show = Boolean(result)
-      })
+    return this.emitter.on("list-show", async (event: ShowListEvent) => {
+      const result = await callback(event.editor)
+      /* eslint-disable-next-line require-atomic-updates */
+      event.show = Boolean(result)
     })
   }
 
@@ -320,10 +320,10 @@ export default class Commands {
   }
 
   onHighlightsShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("highlights-show", function (event: ShowListEvent) {
-      return callback(event.editor).then(function (result) {
-        event.show = Boolean(result)
-      })
+    return this.emitter.on("highlights-show", async (event: ShowListEvent) => {
+      const result = await callback(event.editor)
+      /* eslint-disable-next-line require-atomic-updates */
+      event.show = Boolean(result)
     })
   }
 
