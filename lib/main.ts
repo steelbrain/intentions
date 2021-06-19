@@ -8,21 +8,15 @@ import { paint, ProvidersHighlight } from "./providers-highlight"
 import type { ListProvider, HighlightProvider } from "./types"
 
 export class Intentions {
-  active: Disposable | null | undefined
-  commands: Commands
-  providersList: ProvidersList
-  providersHighlight: ProvidersHighlight
-  subscriptions: CompositeDisposable
+  active: Disposable | null | undefined = null
+  commands = new Commands()
+  providersList = new ProvidersList()
+  providersHighlight = new ProvidersHighlight()
+  subscriptions = new CompositeDisposable()
 
   constructor() {
-    this.active = null
-    this.commands = new Commands()
-    this.providersList = new ProvidersList()
-    this.providersHighlight = new ProvidersHighlight()
-    this.subscriptions = new CompositeDisposable()
-    this.subscriptions.add(this.commands)
-    this.subscriptions.add(this.providersList)
-    this.subscriptions.add(this.providersHighlight)
+    this.subscriptions.add(this.commands, this.providersList, this.providersHighlight)
+
     // eslint-disable-next-line arrow-parens
     this.commands.onListShow(async (textEditor) => {
       const results = await this.providersList.trigger(textEditor)
@@ -38,23 +32,19 @@ export class Intentions {
         intention.selected()
         subscriptions.dispose()
       })
-      subscriptions.add(listView)
-      subscriptions.add(() => {
-        if (this.active === subscriptions) {
-          this.active = null
-        }
-      })
       subscriptions.add(
+        listView,
+        () => {
+          if (this.active === subscriptions) {
+            this.active = null
+          }
+        },
         this.commands.onListMove(function (movement) {
           listView.move(movement)
-        })
-      )
-      subscriptions.add(
+        }),
         this.commands.onListConfirm(function () {
           listView.select()
-        })
-      )
-      subscriptions.add(
+        }),
         this.commands.onListHide(function () {
           subscriptions.dispose()
         })
@@ -72,17 +62,17 @@ export class Intentions {
 
       const painted = paint(textEditor, results)
       const subscriptions = new CompositeDisposable()
-      subscriptions.add(() => {
-        if (this.active === subscriptions) {
-          this.active = null
-        }
-      })
       subscriptions.add(
+        () => {
+          if (this.active === subscriptions) {
+            this.active = null
+          }
+        },
         this.commands.onHighlightsHide(function () {
           subscriptions.dispose()
-        })
+        }),
+        painted
       )
-      subscriptions.add(painted)
       this.active = subscriptions
       return true
     })

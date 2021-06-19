@@ -5,13 +5,8 @@ import { provider as validateProvider, suggestionsList as validateSuggestions } 
 import type { ListProvider, ListItem } from "./types"
 
 export class ProvidersList {
-  number: number
-  providers: Set<ListProvider>
-
-  constructor() {
-    this.number = 0
-    this.providers = new Set()
-  }
+  number: number = 0
+  providers = new Set<ListProvider>()
 
   addProvider(provider: ListProvider) {
     if (!this.hasProvider(provider)) {
