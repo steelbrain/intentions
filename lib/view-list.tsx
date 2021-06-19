@@ -7,7 +7,7 @@ import { ListElement, Refs as ListElementRefs } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
 export class ListView {
-  emitter: Emitter
+  emitter = new Emitter<{}, { "did-select": ListItem }>() // eslint-disable-line @typescript-eslint/ban-types
   // root element
   element: HTMLElement
   subscriptions: CompositeDisposable
@@ -18,7 +18,6 @@ export class ListView {
   constructor() {
     this.element = document.createElement("div")
 
-    this.emitter = new Emitter()
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
   }
