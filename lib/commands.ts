@@ -31,14 +31,21 @@ export default class Commands {
   active: {
     type: "list" | "highlight"
     subscriptions: CompositeDisposable
-  } | null
-  emitter: Emitter
-  subscriptions: CompositeDisposable
+  } | null = null
+  emitter = new Emitter<
+    {}, // eslint-disable-line @typescript-eslint/ban-types
+    {
+      "list-show": ShowListEvent
+      "list-move": ListMovement
+      "list-confirm": never
+      "list-hide": never
+      "highlights-show": ShowListEvent
+      "highlights-hide": never
+    }
+  >()
+  subscriptions = new CompositeDisposable()
 
   constructor() {
-    this.active = null
-    this.emitter = new Emitter()
-    this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
   }
 
@@ -288,7 +295,7 @@ export default class Commands {
   }
 
   async shouldHighlightsShow(editor: TextEditor): Promise<boolean> {
-    const event = {
+    const event: ShowListEvent = {
       show: false,
       editor,
     }
