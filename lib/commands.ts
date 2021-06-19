@@ -28,13 +28,10 @@ type ShowListEvent = {
 }
 
 export default class Commands {
-  active:
-    | {
-        type: "list" | "highlight"
-        subscriptions: CompositeDisposable
-      }
-    | null
-    | undefined
+  active: {
+    type: "list" | "highlight"
+    subscriptions: CompositeDisposable
+  } | null
   emitter: Emitter
   subscriptions: CompositeDisposable
 
@@ -49,14 +46,14 @@ export default class Commands {
     this.subscriptions.add(
       atom.commands.add("atom-text-editor:not([mini])", {
         "intentions:show": async (e: CommandEventExtended) => {
-          if (this.active && this.active.type === "list") {
+          if (this.active?.type === "list") {
             return
           }
 
           const subscriptions = new CompositeDisposable()
           const processListShowP = this.processListShow(subscriptions)
 
-          if (!e.originalEvent || e.originalEvent.type !== "keydown") {
+          if (e.originalEvent?.type !== "keydown") {
             return
           }
 
@@ -84,14 +81,14 @@ export default class Commands {
           this.processListHide()
         },
         "intentions:highlight": async (e: CommandEventExtended<KeyboardEvent>) => {
-          if (this.active && this.active.type === "highlight") {
+          if (this.active?.type === "highlight") {
             return
           }
           e.abortKeyBinding()
           const subscriptions = new CompositeDisposable()
           const processHighlightsShowP = this.processHighlightsShow(subscriptions)
 
-          if (!e.originalEvent || e.originalEvent.type !== "keydown") {
+          if (e.originalEvent?.type !== "keydown") {
             return
           }
 
@@ -145,7 +142,7 @@ export default class Commands {
   }
 
   async processListShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
-    if (this.active) {
+    if (this.active !== null) {
       switch (this.active.type) {
         case "list":
           throw new Error("Already active")
@@ -160,7 +157,7 @@ export default class Commands {
 
     const editor = atom.workspace.getActiveTextEditor()
 
-    if (!editor) {
+    if (editor === undefined) {
       return
     }
 
@@ -180,7 +177,7 @@ export default class Commands {
       subscriptions,
     }
     subscriptions.add(() => {
-      if (this.active && this.active.type === "list" && this.active.subscriptions === subscriptions) {
+      if (this.active !== null && this.active.type === "list" && this.active.subscriptions === subscriptions) {
         this.processListHide()
         this.active = null
       }
@@ -198,7 +195,7 @@ export default class Commands {
   }
 
   processListHide() {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -209,7 +206,7 @@ export default class Commands {
   }
 
   processListMove(movement: ListMovement) {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -217,7 +214,7 @@ export default class Commands {
   }
 
   processListConfirm() {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -225,7 +222,7 @@ export default class Commands {
   }
 
   async processHighlightsShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
-    if (this.active) {
+    if (this.active !== null) {
       switch (this.active.type) {
         case "highlight":
           throw new Error("Already active")
@@ -240,7 +237,7 @@ export default class Commands {
 
     const editor = atom.workspace.getActiveTextEditor()
 
-    if (!editor) {
+    if (editor === undefined) {
       return
     }
 
@@ -261,7 +258,7 @@ export default class Commands {
       subscriptions,
     }
     subscriptions.add(() => {
-      if (this.active && this.active.type === "highlight" && this.active.subscriptions === subscriptions) {
+      if (this.active !== null && this.active.type === "highlight" && this.active.subscriptions === subscriptions) {
         this.processHighlightsHide()
       }
 
@@ -271,7 +268,7 @@ export default class Commands {
   }
 
   processHighlightsHide() {
-    if (!this.active || this.active.type !== "highlight") {
+    if (this.active?.type !== "highlight") {
       return
     }
 
@@ -333,9 +330,6 @@ export default class Commands {
 
   dispose() {
     this.subscriptions.dispose()
-
-    if (this.active) {
-      this.active.subscriptions.dispose()
-    }
+    this.active?.subscriptions.dispose()
   }
 }
