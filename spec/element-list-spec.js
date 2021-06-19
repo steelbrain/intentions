@@ -2,6 +2,7 @@
 import "module-alias/register"
 
 import { ListElement } from "../dist/elements/list"
+import type { Refs as ListElementRefs } from "../lib/elements/list"
 import { createSuggestion } from "./helpers"
 import { render } from "solid-js/web"
 
@@ -11,9 +12,14 @@ function getOlElement(suggestions) {
 
   const selectCallback = jasmine.createSpy("suggestion.selected")
 
-  const { component, setMovement, setConfirmed } = ListElement({ suggestions, selectCallback, movement: "move-to-top" })
-
-  render(() => component, rootElement)
+  // manual ref handling because of not using solid jsx
+  let refs: ListElementRefs
+  const ref = (r$) => {
+    refs = r$
+  }
+  const props = { suggestions, selectCallback, movement: "move-to-top", ref }
+  render(() => ListElement(props), rootElement)
+  const { setMovement, setConfirmed } = refs
 
   const intentionList = rootElement.querySelector("#intentions-list")
   const olElement = intentionList.firstElementChild
