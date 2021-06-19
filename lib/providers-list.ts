@@ -34,7 +34,7 @@ export default class ProvidersList {
     const editorPath = textEditor.getPath()
     const bufferPosition = textEditor.getCursorBufferPosition()
 
-    if (!editorPath) {
+    if (editorPath === undefined) {
       return []
     }
 

@@ -1,10 +1,12 @@
 import disposableEvent from "disposable-event"
-import { CompositeDisposable, Disposable, Emitter } from "sb-event-kit"
+import { CompositeDisposable, Emitter } from "sb-event-kit" // Emitter of sb-event-kit is necessary for commands
+import { Disposable } from "atom"
 import type { TextEditor } from "atom"
 
 import type { ListMovement } from "./types"
 import type { CommandEventExtended } from "./types/atom"
 import { TargetWithAddEventListener } from "disposable-event/src/target"
+import { showError } from "./helpers"
 
 // NOTE:
 // We don't *need* to add the intentions:hide command
@@ -46,13 +48,13 @@ export default class Commands {
   activate() {
     this.subscriptions.add(
       atom.commands.add("atom-text-editor:not([mini])", {
-        "intentions:show": (e: CommandEventExtended) => {
+        "intentions:show": async (e: CommandEventExtended) => {
           if (this.active && this.active.type === "list") {
             return
           }
 
           const subscriptions = new CompositeDisposable()
-          this.processListShow(subscriptions)
+          const processListShowP = this.processListShow(subscriptions)
 
           if (!e.originalEvent || e.originalEvent.type !== "keydown") {
             return
@@ -76,17 +78,18 @@ export default class Commands {
               })
             )
           })
+          await processListShowP
         },
         "intentions:hide": () => {
           this.processListHide()
         },
-        "intentions:highlight": (e: CommandEventExtended<KeyboardEvent>) => {
+        "intentions:highlight": async (e: CommandEventExtended<KeyboardEvent>) => {
           if (this.active && this.active.type === "highlight") {
             return
           }
           e.abortKeyBinding()
           const subscriptions = new CompositeDisposable()
-          this.processHighlightsShow(subscriptions)
+          const processHighlightsShowP = this.processHighlightsShow(subscriptions)
 
           if (!e.originalEvent || e.originalEvent.type !== "keydown") {
             return
@@ -103,6 +106,7 @@ export default class Commands {
               this.processHighlightsHide()
             })
           )
+          await processHighlightsShowP
         },
       })
     )
@@ -133,7 +137,7 @@ export default class Commands {
     )
   }
 
-  stoppingEvent(callback: (event: Event) => any): (event: Event) => void {
+  stoppingEvent(callback: (event: Event) => void): (event: Event) => void {
     return (event: Event) => {
       event.stopImmediatePropagation()
       callback.call(this, event)
@@ -201,7 +205,7 @@ export default class Commands {
     const { subscriptions } = this.active
     this.active = null
     subscriptions.dispose()
-    this.emitter.emit("list-hide")
+    this.emitter.emit("list-hide").catch((e: Error) => showError(e))
   }
 
   processListMove(movement: ListMovement) {
@@ -209,7 +213,7 @@ export default class Commands {
       return
     }
 
-    this.emitter.emit("list-move", movement)
+    this.emitter.emit("list-move", movement).catch((e: Error) => showError(e))
   }
 
   processListConfirm() {
@@ -217,7 +221,7 @@ export default class Commands {
       return
     }
 
-    this.emitter.emit("list-confirm")
+    this.emitter.emit("list-confirm").catch((e: Error) => showError(e))
   }
 
   async processHighlightsShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
@@ -274,7 +278,7 @@ export default class Commands {
     const { subscriptions } = this.active
     this.active = null
     subscriptions.dispose()
-    this.emitter.emit("highlights-hide")
+    this.emitter.emit("highlights-hide").catch((e: Error) => showError(e))
   }
 
   async shouldListShow(editor: TextEditor): Promise<boolean> {
@@ -303,15 +307,15 @@ export default class Commands {
     })
   }
 
-  onListHide(callback: () => any) {
+  onListHide(callback: () => void) {
     return this.emitter.on("list-hide", callback)
   }
 
-  onListMove(callback: (movement: ListMovement) => any) {
+  onListMove(callback: (movement: ListMovement) => void) {
     return this.emitter.on("list-move", callback)
   }
 
-  onListConfirm(callback: () => any) {
+  onListConfirm(callback: () => void) {
     return this.emitter.on("list-confirm", callback)
   }
 
@@ -323,7 +327,7 @@ export default class Commands {
     })
   }
 
-  onHighlightsHide(callback: () => any) {
+  onHighlightsHide(callback: () => void) {
     return this.emitter.on("highlights-hide", callback)
   }
 

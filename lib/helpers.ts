@@ -7,11 +7,11 @@ export function processListItems(suggestions: Array<ListItem>): Array<ListItem> 
     const suggestion = suggestions[i]
     const className: string[] = []
 
-    if (suggestion.class) {
+    if (suggestion.class !== undefined && suggestion.class !== "") {
       className.push(suggestion.class.trim())
     }
 
-    if (suggestion.icon) {
+    if (suggestion.icon !== undefined && suggestion.icon !== "") {
       className.push(`icon icon-${suggestion.icon}`)
     }
 
@@ -23,13 +23,18 @@ export function processListItems(suggestions: Array<ListItem>): Array<ListItem> 
   })
 }
 export function showError(message: Error | string, detail?: string) {
+  let detailShown: string | undefined
+  let messageShown: string
   if (message instanceof Error) {
-    detail = message.stack
-    message = message.message
+    detailShown = message.stack ?? ""
+    messageShown = message.message
+  } else {
+    detailShown = detail
+    messageShown = message
   }
 
-  atom.notifications.addError(`[Intentions] ${message}`, {
-    detail,
+  atom.notifications.addError(`[Intentions] ${messageShown}`, {
+    detail: detailShown,
     dismissable: true,
   })
 }

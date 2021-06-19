@@ -1,7 +1,7 @@
 import { render } from "solid-js/web"
-import { CompositeDisposable, Emitter } from "sb-event-kit"
-import type { Disposable } from "sb-event-kit"
-import type { TextEditor } from "atom"
+import { CompositeDisposable } from "sb-event-kit"
+import { Emitter } from "atom"
+import type { Disposable, TextEditor } from "atom"
 
 import { ListElement } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
@@ -60,7 +60,7 @@ export default class ListView {
     this.setConfirmed?.(true)
   }
 
-  onDidSelect(callback: (...args: Array<any>) => any): Disposable {
+  onDidSelect(callback: (...args: Array<ListItem>) => void): Disposable {
     return this.emitter.on("did-select", callback)
   }
 

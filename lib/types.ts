@@ -21,7 +21,7 @@ export type HighlightItem = {
     element: HTMLElement
     textEditor: TextEditor
     matchedText: string
-  }) => any
+  }) => void
 }
 export type ListProvider = {
   grammarScopes: Array<string>

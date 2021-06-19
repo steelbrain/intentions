@@ -1,8 +1,9 @@
 {
-  "env": {
-    "jasmine": true
-  },
-  "globals": {
-    "waitsForPromise": true
+  "extends": "../.eslintrc.json",
+  "ignorePatterns": ["dist/", "node_modules/"],
+  "rules": {
+    "no-empty-function": "off",
+    "import/no-unassigned-import": "off",
+    "import/no-unresolved": "off"
   }
 }
