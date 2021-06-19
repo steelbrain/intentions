@@ -19,13 +19,16 @@ export function consumeListIntentions(provider: ListProvider | Array<ListProvide
   if (intentions === undefined) {
     return
   }
-  providers.forEach((entry) => {
-    ;(intentions as Intentions).consumeListProvider(entry)
-  })
+  for (const entry of providers) {
+    intentions.consumeListProvider(entry)
+  }
   return new Disposable(() => {
-    providers.forEach((entry) => {
-      ;(intentions as Intentions).deleteListProvider(entry)
-    })
+    if (intentions === undefined) {
+      return
+    }
+    for (const entry of providers) {
+      intentions.deleteListProvider(entry)
+    }
   })
 }
 
@@ -34,12 +37,15 @@ export function consumeHighlightIntentions(provider: HighlightProvider | Array<H
   if (intentions === undefined) {
     return
   }
-  providers.forEach((entry) => {
-    ;(intentions as Intentions).consumeHighlightProvider(entry)
-  })
+  for (const entry of providers) {
+    intentions.consumeHighlightProvider(entry)
+  }
   return new Disposable(() => {
-    providers.forEach((entry) => {
-      ;(intentions as Intentions).deleteHighlightProvider(entry)
-    })
+    if (intentions === undefined) {
+      return
+    }
+    for (const entry of providers) {
+      intentions.deleteHighlightProvider(entry)
+    }
   })
 }
