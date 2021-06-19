@@ -60,7 +60,7 @@ export default class ListView {
     this.setConfirmed?.(true)
   }
 
-  onDidSelect(callback: (...args: Array<any>) => void): Disposable {
+  onDidSelect(callback: (...args: Array<ListItem>) => void): Disposable {
     return this.emitter.on("did-select", callback)
   }
 
