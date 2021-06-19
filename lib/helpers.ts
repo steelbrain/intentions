@@ -7,11 +7,11 @@ export function processListItems(suggestions: Array<ListItem>): Array<ListItem> 
     const suggestion = suggestions[i]
     const className: string[] = []
 
-    if (suggestion.class) {
+    if (suggestion.class !== undefined && suggestion.class !== "") {
       className.push(suggestion.class.trim())
     }
 
-    if (suggestion.icon) {
+    if (suggestion.icon !== undefined && suggestion.icon !== "") {
       className.push(`icon icon-${suggestion.icon}`)
     }
 
