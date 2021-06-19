@@ -46,13 +46,13 @@ export default class Commands {
   activate() {
     this.subscriptions.add(
       atom.commands.add("atom-text-editor:not([mini])", {
-        "intentions:show": (e: CommandEventExtended) => {
+        "intentions:show": async (e: CommandEventExtended) => {
           if (this.active && this.active.type === "list") {
             return
           }
 
           const subscriptions = new CompositeDisposable()
-          this.processListShow(subscriptions)
+          const processListShowP = this.processListShow(subscriptions)
 
           if (!e.originalEvent || e.originalEvent.type !== "keydown") {
             return
@@ -76,17 +76,18 @@ export default class Commands {
               })
             )
           })
+          await processListShowP
         },
         "intentions:hide": () => {
           this.processListHide()
         },
-        "intentions:highlight": (e: CommandEventExtended<KeyboardEvent>) => {
+        "intentions:highlight": async (e: CommandEventExtended<KeyboardEvent>) => {
           if (this.active && this.active.type === "highlight") {
             return
           }
           e.abortKeyBinding()
           const subscriptions = new CompositeDisposable()
-          this.processHighlightsShow(subscriptions)
+          const processHighlightsShowP = this.processHighlightsShow(subscriptions)
 
           if (!e.originalEvent || e.originalEvent.type !== "keydown") {
             return
@@ -103,6 +104,7 @@ export default class Commands {
               this.processHighlightsHide()
             })
           )
+          await processHighlightsShowP
         },
       })
     )
