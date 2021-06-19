@@ -1,6 +1,6 @@
 import { Disposable } from "atom"
 
-import Intentions from "./main"
+import { Intentions } from "./main"
 import type { ListProvider, HighlightProvider } from "./types"
 
 let intentions: Intentions | undefined = undefined

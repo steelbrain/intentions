@@ -6,20 +6,16 @@ import type { Disposable, TextEditor } from "atom"
 import { ListElement, Refs as ListElementRefs } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
-export default class ListView {
-  emitter: Emitter
+export class ListView {
+  emitter = new Emitter<{}, { "did-select": ListItem }>() // eslint-disable-line @typescript-eslint/ban-types
   // root element
-  element: HTMLElement
-  subscriptions: CompositeDisposable
+  element: HTMLElement = document.createElement("div")
+  subscriptions = new CompositeDisposable()
 
   setMovement?: ListElementRefs["setMovement"]
   setConfirmed?: ListElementRefs["setConfirmed"]
 
   constructor() {
-    this.element = document.createElement("div")
-
-    this.emitter = new Emitter()
-    this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
   }
 

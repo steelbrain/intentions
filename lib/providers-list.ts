@@ -4,14 +4,9 @@ import { processListItems } from "./helpers"
 import { provider as validateProvider, suggestionsList as validateSuggestions } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
-export default class ProvidersList {
-  number: number
-  providers: Set<ListProvider>
-
-  constructor() {
-    this.number = 0
-    this.providers = new Set()
-  }
+export class ProvidersList {
+  number: number = 0
+  providers = new Set<ListProvider>()
 
   addProvider(provider: ListProvider) {
     if (!this.hasProvider(provider)) {

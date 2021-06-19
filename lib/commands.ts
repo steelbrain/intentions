@@ -27,21 +27,25 @@ type ShowListEvent = {
   editor: TextEditor
 }
 
-export default class Commands {
-  active:
-    | {
-        type: "list" | "highlight"
-        subscriptions: CompositeDisposable
-      }
-    | null
-    | undefined
-  emitter: Emitter
-  subscriptions: CompositeDisposable
+export class Commands {
+  active: {
+    type: "list" | "highlight"
+    subscriptions: CompositeDisposable
+  } | null = null
+  emitter = new Emitter<
+    {}, // eslint-disable-line @typescript-eslint/ban-types
+    {
+      "list-show": ShowListEvent
+      "list-move": ListMovement
+      "list-confirm": never
+      "list-hide": never
+      "highlights-show": ShowListEvent
+      "highlights-hide": never
+    }
+  >()
+  subscriptions = new CompositeDisposable()
 
   constructor() {
-    this.active = null
-    this.emitter = new Emitter()
-    this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.emitter)
   }
 
@@ -49,14 +53,14 @@ export default class Commands {
     this.subscriptions.add(
       atom.commands.add("atom-text-editor:not([mini])", {
         "intentions:show": async (e: CommandEventExtended) => {
-          if (this.active && this.active.type === "list") {
+          if (this.active?.type === "list") {
             return
           }
 
           const subscriptions = new CompositeDisposable()
           const processListShowP = this.processListShow(subscriptions)
 
-          if (!e.originalEvent || e.originalEvent.type !== "keydown") {
+          if (e.originalEvent?.type !== "keydown") {
             return
           }
 
@@ -65,9 +69,7 @@ export default class Commands {
             subscriptions.add(
               atom.keymaps.onDidMatchBinding(function ({ binding }) {
                 matched = matched && CORE_COMMANDS.has(binding.command)
-              })
-            )
-            subscriptions.add(
+              }),
               disposableEvent(document.body as unknown as TargetWithAddEventListener, "keyup", () => {
                 if (matched) {
                   return
@@ -80,18 +82,16 @@ export default class Commands {
           })
           await processListShowP
         },
-        "intentions:hide": () => {
-          this.processListHide()
-        },
+        "intentions:hide": this.processListHide,
         "intentions:highlight": async (e: CommandEventExtended<KeyboardEvent>) => {
-          if (this.active && this.active.type === "highlight") {
+          if (this.active?.type === "highlight") {
             return
           }
           e.abortKeyBinding()
           const subscriptions = new CompositeDisposable()
           const processHighlightsShowP = this.processHighlightsShow(subscriptions)
 
-          if (!e.originalEvent || e.originalEvent.type !== "keydown") {
+          if (e.originalEvent?.type !== "keydown") {
             return
           }
 
@@ -108,31 +108,16 @@ export default class Commands {
           )
           await processHighlightsShowP
         },
-      })
-    )
-    this.subscriptions.add(
+      }),
+
       atom.commands.add("atom-text-editor.intentions-list:not([mini])", {
-        "intentions:confirm": this.stoppingEvent(() => {
-          this.processListConfirm()
-        }),
-        "core:move-up": this.stoppingEvent(() => {
-          this.processListMove("up")
-        }),
-        "core:move-down": this.stoppingEvent(() => {
-          this.processListMove("down")
-        }),
-        "core:page-up": this.stoppingEvent(() => {
-          this.processListMove("page-up")
-        }),
-        "core:page-down": this.stoppingEvent(() => {
-          this.processListMove("page-down")
-        }),
-        "core:move-to-top": this.stoppingEvent(() => {
-          this.processListMove("move-to-top")
-        }),
-        "core:move-to-bottom": this.stoppingEvent(() => {
-          this.processListMove("move-to-bottom")
-        }),
+        "intentions:confirm": this.stoppingEvent(this.processListConfirm),
+        "core:move-up": this.stoppingEvent(() => this.processListMove("up")),
+        "core:move-down": this.stoppingEvent(() => this.processListMove("down")),
+        "core:page-up": this.stoppingEvent(() => this.processListMove("page-up")),
+        "core:page-down": this.stoppingEvent(() => this.processListMove("page-down")),
+        "core:move-to-top": this.stoppingEvent(() => this.processListMove("move-to-top")),
+        "core:move-to-bottom": this.stoppingEvent(() => this.processListMove("move-to-bottom")),
       })
     )
   }
@@ -145,7 +130,7 @@ export default class Commands {
   }
 
   async processListShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
-    if (this.active) {
+    if (this.active !== null) {
       switch (this.active.type) {
         case "list":
           throw new Error("Already active")
@@ -160,7 +145,7 @@ export default class Commands {
 
     const editor = atom.workspace.getActiveTextEditor()
 
-    if (!editor) {
+    if (editor === undefined) {
       return
     }
 
@@ -179,15 +164,15 @@ export default class Commands {
       type: "list",
       subscriptions,
     }
-    subscriptions.add(() => {
-      if (this.active && this.active.type === "list" && this.active.subscriptions === subscriptions) {
-        this.processListHide()
-        this.active = null
-      }
-
-      editorElement.classList.remove("intentions-list")
-    })
     subscriptions.add(
+      () => {
+        if (this.active !== null && this.active.type === "list" && this.active.subscriptions === subscriptions) {
+          this.processListHide()
+          this.active = null
+        }
+
+        editorElement.classList.remove("intentions-list")
+      },
       disposableEvent(document.body as unknown as TargetWithAddEventListener, "mouseup", function () {
         setTimeout(function () {
           subscriptions.dispose()
@@ -198,7 +183,7 @@ export default class Commands {
   }
 
   processListHide() {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -209,7 +194,7 @@ export default class Commands {
   }
 
   processListMove(movement: ListMovement) {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -217,7 +202,7 @@ export default class Commands {
   }
 
   processListConfirm() {
-    if (!this.active || this.active.type !== "list") {
+    if (this.active?.type !== "list") {
       return
     }
 
@@ -225,7 +210,7 @@ export default class Commands {
   }
 
   async processHighlightsShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
-    if (this.active) {
+    if (this.active !== null) {
       switch (this.active.type) {
         case "highlight":
           throw new Error("Already active")
@@ -240,7 +225,7 @@ export default class Commands {
 
     const editor = atom.workspace.getActiveTextEditor()
 
-    if (!editor) {
+    if (editor === undefined) {
       return
     }
 
@@ -261,7 +246,7 @@ export default class Commands {
       subscriptions,
     }
     subscriptions.add(() => {
-      if (this.active && this.active.type === "highlight" && this.active.subscriptions === subscriptions) {
+      if (this.active !== null && this.active.type === "highlight" && this.active.subscriptions === subscriptions) {
         this.processHighlightsHide()
       }
 
@@ -271,7 +256,7 @@ export default class Commands {
   }
 
   processHighlightsHide() {
-    if (!this.active || this.active.type !== "highlight") {
+    if (this.active?.type !== "highlight") {
       return
     }
 
@@ -291,7 +276,7 @@ export default class Commands {
   }
 
   async shouldHighlightsShow(editor: TextEditor): Promise<boolean> {
-    const event = {
+    const event: ShowListEvent = {
       show: false,
       editor,
     }
@@ -300,10 +285,10 @@ export default class Commands {
   }
 
   onListShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("list-show", function (event: ShowListEvent) {
-      return callback(event.editor).then(function (result) {
-        event.show = Boolean(result)
-      })
+    return this.emitter.on("list-show", async (event: ShowListEvent) => {
+      const result = await callback(event.editor)
+      /* eslint-disable-next-line require-atomic-updates */
+      event.show = Boolean(result)
     })
   }
 
@@ -320,10 +305,10 @@ export default class Commands {
   }
 
   onHighlightsShow(callback: (editor: TextEditor) => Promise<boolean>) {
-    return this.emitter.on("highlights-show", function (event: ShowListEvent) {
-      return callback(event.editor).then(function (result) {
-        event.show = Boolean(result)
-      })
+    return this.emitter.on("highlights-show", async (event: ShowListEvent) => {
+      const result = await callback(event.editor)
+      /* eslint-disable-next-line require-atomic-updates */
+      event.show = Boolean(result)
     })
   }
 
@@ -333,9 +318,6 @@ export default class Commands {
 
   dispose() {
     this.subscriptions.dispose()
-
-    if (this.active) {
-      this.active.subscriptions.dispose()
-    }
+    this.active?.subscriptions.dispose()
   }
 }

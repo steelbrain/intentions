@@ -4,14 +4,9 @@ import { provider as validateProvider, suggestionsShow as validateSuggestions } 
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
-export default class ProvidersHighlight {
-  number: number
-  providers: Set<HighlightProvider>
-
-  constructor() {
-    this.number = 0
-    this.providers = new Set()
-  }
+export class ProvidersHighlight {
+  number: number = 0
+  providers = new Set<HighlightProvider>()
 
   addProvider(provider: HighlightProvider) {
     if (!this.hasProvider(provider)) {
