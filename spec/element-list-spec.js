@@ -5,6 +5,7 @@ import { ListElement } from "../dist/elements/list"
 import { createSuggestion } from "./helpers"
 import { render } from "solid-js/web"
 
+/* eslint-disable-next-line no-shadow */
 function getOlElement(suggestions) {
   const rootElement = document.createElement("div")
 
@@ -15,7 +16,7 @@ function getOlElement(suggestions) {
   render(() => component, rootElement)
 
   const intentionList = rootElement.querySelector("#intentions-list")
-  olElement = intentionList.firstElementChild
+  const olElement = intentionList.firstElementChild
   return { olElement, selectCallback, setMovement, setConfirmed }
 }
 
