@@ -1,11 +1,12 @@
 import disposableEvent from "disposable-event"
-import { CompositeDisposable } from "sb-event-kit"
-import { Emitter, Disposable } from "atom"
+import { CompositeDisposable, Emitter } from "sb-event-kit" // Emitter of sb-event-kit is necessary for commands
+import { Disposable } from "atom"
 import type { TextEditor } from "atom"
 
 import type { ListMovement } from "./types"
 import type { CommandEventExtended } from "./types/atom"
 import { TargetWithAddEventListener } from "disposable-event/src/target"
+import { showError } from "./helpers"
 
 // NOTE:
 // We don't *need* to add the intentions:hide command
@@ -204,7 +205,7 @@ export default class Commands {
     const { subscriptions } = this.active
     this.active = null
     subscriptions.dispose()
-    this.emitter.emit("list-hide")
+    this.emitter.emit("list-hide").catch((e: Error) => showError(e))
   }
 
   processListMove(movement: ListMovement) {
@@ -212,7 +213,7 @@ export default class Commands {
       return
     }
 
-    this.emitter.emit("list-move", movement)
+    this.emitter.emit("list-move", movement).catch((e: Error) => showError(e))
   }
 
   processListConfirm() {
@@ -220,7 +221,7 @@ export default class Commands {
       return
     }
 
-    this.emitter.emit("list-confirm")
+    this.emitter.emit("list-confirm").catch((e: Error) => showError(e))
   }
 
   async processHighlightsShow(subscription: (CompositeDisposable | Disposable) | null | undefined = null) {
@@ -277,7 +278,7 @@ export default class Commands {
     const { subscriptions } = this.active
     this.active = null
     subscriptions.dispose()
-    this.emitter.emit("highlights-hide")
+    this.emitter.emit("highlights-hide").catch((e: Error) => showError(e))
   }
 
   async shouldListShow(editor: TextEditor): Promise<boolean> {
