@@ -3,7 +3,7 @@ import { CompositeDisposable } from "sb-event-kit"
 import { Emitter } from "atom"
 import type { Disposable, TextEditor } from "atom"
 
-import { ListElement } from "./elements/list"
+import { ListElement, Refs as ListElementRefs } from "./elements/list"
 import type { ListItem, ListMovement } from "./types"
 
 export default class ListView {
@@ -12,8 +12,8 @@ export default class ListView {
   element: HTMLElement
   subscriptions: CompositeDisposable
 
-  setMovement?: (movement: ListMovement) => void
-  setConfirmed?: (confiremd: boolean) => void
+  setMovement?: ListElementRefs["setMovement"]
+  setConfirmed?: ListElementRefs["setConfirmed"]
 
   constructor() {
     this.element = document.createElement("div")
@@ -24,19 +24,26 @@ export default class ListView {
   }
 
   activate(editor: TextEditor, suggestions: Array<ListItem>) {
-    const { component, setMovement, setConfirmed } = ListElement({
-      suggestions,
-      selectCallback: (selectedSuggestion: ListItem) => {
-        this.emitter.emit("did-select", selectedSuggestion)
-        this.dispose()
-      },
-    })
-    // store setters
-    this.setMovement = setMovement
-    this.setConfirmed = setConfirmed
-
+    let refs: ListElementRefs | undefined
     // render the list element component
-    render(() => component, this.element)
+    render(
+      () => (
+        <ListElement
+          suggestions={suggestions}
+          selectCallback={(selectedSuggestion: ListItem) => {
+            this.emitter.emit("did-select", selectedSuggestion)
+            this.dispose()
+          }}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore TODO fix the type
+          ref={refs} // pass so it sets the setters
+        />
+      ),
+      this.element
+    )
+    // store the setters
+    this.setMovement = refs?.setMovement
+    this.setConfirmed = refs?.setConfirmed
 
     const bufferPosition = editor.getCursorBufferPosition()
     const marker = editor.markBufferRange([bufferPosition, bufferPosition], {

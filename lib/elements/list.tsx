@@ -1,11 +1,17 @@
 import { createSignal, createSelector, For, createComputed, on } from "solid-js"
 
 import { $class } from "../helpers"
-import type { ListItem } from "../types"
+import type { ListItem, ListMovement } from "../types"
 
 export interface Props {
   suggestions: Array<ListItem>
   selectCallback: (suggestion: ListItem) => void
+  ref?: (refs: Refs) => void
+}
+
+export interface Refs {
+  setMovement: (movement: ListMovement) => void
+  setConfirmed: (confiremd: boolean) => void
 }
 
 export function ListElement(props: Props) {
@@ -17,6 +23,9 @@ export function ListElement(props: Props) {
   const [getMovement, setMovement] = createSignal<string | undefined>("move-to-top")
   // selected state
   const [getConfirmed, setConfirmed] = createSignal(false)
+
+  // store the exported setters in the ref
+  props.ref?.({ setMovement, setConfirmed })
 
   function handleSelection(suggestion: ListItem, index: number) {
     // call its associated callback
@@ -75,7 +84,7 @@ export function ListElement(props: Props) {
     className += " intentions-scroll"
   }
 
-  const component = (
+  return (
     <div class={className} id="intentions-list">
       <ol className="list-group">
         <For each={props.suggestions}>
@@ -98,5 +107,4 @@ export function ListElement(props: Props) {
       </ol>
     </div>
   )
-  return { component, setMovement, setConfirmed }
 }
