@@ -1,4 +1,4 @@
-import type { TextEditor, Range, DisplayMarker } from "atom"
+import type { TextEditor, Range } from "atom"
 import { flatObjectArray, getIntentionsForVisibleRange, scopesForBufferPosition } from "./helpers"
 
 import { provider as validateProvider } from "./validate"
@@ -63,30 +63,25 @@ export class ProvidersHighlight {
 }
 
 export function paint(textEditor: TextEditor, intentions: Array<HighlightItem>): () => void {
-  const markers: DisplayMarker[] = []
+  const markerLayer = textEditor.addMarkerLayer()
 
   for (const intention of intentions) {
     const matchedText = textEditor.getTextInBufferRange(intention.range)
-    const marker = textEditor.markBufferRange(intention.range)
+    const marker = markerLayer.markBufferRange(intention.range)
     intention.created({
       textEditor,
       marker,
       matchedText,
     })
-    textEditor.decorateMarker(marker, {
-      type: "highlight",
-      class: "intentions-inline",
-    })
-    markers.push(marker)
   }
 
-  return function () {
-    markers.forEach(function (marker) {
-      try {
-        marker.destroy()
-      } catch (_) {
-        /* No Op */
-      }
-    })
+  textEditor.decorateMarkerLayer(markerLayer, {
+    type: "highlight",
+    class: "intentions-inline",
+  })
+
+  return () => {
+    markerLayer.clear()
+    markerLayer.destroy()
   }
 }
