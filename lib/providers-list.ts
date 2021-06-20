@@ -33,8 +33,7 @@ export class ProvidersList {
       return []
     }
 
-    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()]
-    scopes.push("*")
+    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
     const promises: Promise<ListItem[]>[] = []
     this.providers.forEach(function (provider) {
       if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
