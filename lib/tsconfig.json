@@ -19,6 +19,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "downlevelIteration": true,
     "lib": ["ES2019", "dom"],
     "target": "ES2018",
     "allowJs": true,

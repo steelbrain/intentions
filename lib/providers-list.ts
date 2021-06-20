@@ -1,7 +1,7 @@
 import type { TextEditor } from "atom"
 
-import { processListItems } from "./helpers"
-import { provider as validateProvider, suggestionsList as validateSuggestions } from "./validate"
+import { processListItems, getIntentionsForBufferPosition } from "./helpers"
+import { provider as validateProvider } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
 export class ProvidersList {
@@ -36,24 +36,12 @@ export class ProvidersList {
     }
 
     const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
-    const resultsArray: ListItem[][] = []
+    const promises: Promise<ListItem[]>[] = []
     for (const provider of this.providers) {
-      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
-        // TODO parallelize
-        // eslint-disable-next-line no-await-in-loop
-        const results = await provider.getIntentions({
-          textEditor,
-          bufferPosition,
-        })
-        if (atom.inDevMode()) {
-          validateSuggestions(results)
-        }
-
-        resultsArray.push(results)
-      }
+      promises.push(getIntentionsForBufferPosition(provider, bufferPosition, textEditor, scopes))
     }
 
-    const results = resultsArray
+    const results = (await Promise.all(promises))
       .flat()
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
