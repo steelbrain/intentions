@@ -1,6 +1,6 @@
 /* @flow */
 import invariant from "assert"
-import { ProvidersHighlight } from "../dist/providers-highlight"
+import { ProvidersHighlight, paint } from "../dist/providers-highlight"
 
 describe("ProvidersHighlight", function () {
   let providersHighlight
@@ -312,7 +312,7 @@ describe("ProvidersHighlight", function () {
         invariant(Array.isArray(intentions))
         expect(jsCalled).toBe(true)
         expect(element).not.toBeDefined()
-        providersHighlight.paint(editor, intentions)
+        paint(editor, intentions)
         expect(element).toBeDefined()
         expect(element.textContent.length).toBe(5)
         editor.setTextInBufferRange(range, "something")

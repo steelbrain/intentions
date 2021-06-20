@@ -58,13 +58,6 @@ export class ProvidersHighlight {
     return flatObjectArray<HighlightItem>(resultsArray)
   }
 
-  /* eslint-disable class-methods-use-this */
-  /** @deprecated Use the exported function */
-  paint(...args: Parameters<typeof paint>): ReturnType<typeof paint> {
-    return paint(...args)
-  }
-  /* eslint-enable class-methods-use-this */
-
   dispose() {
     this.providers.clear()
   }
