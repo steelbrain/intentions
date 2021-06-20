@@ -5,7 +5,7 @@ import { provider as validateProvider, suggestionsList as validateSuggestions } 
 import type { ListProvider, ListItem } from "./types"
 
 export class ProvidersList {
-  number: number = 0
+  debounceNumber: number = 0
   providers = new Set<ListProvider>()
 
   addProvider(provider: ListProvider) {
@@ -26,6 +26,8 @@ export class ProvidersList {
   }
 
   async trigger(textEditor: TextEditor): Promise<Array<ListItem>> {
+    const debounceNumber = ++this.debounceNumber
+
     const editorPath = textEditor.getPath()
     const bufferPosition = textEditor.getCursorBufferPosition()
 
@@ -34,34 +36,29 @@ export class ProvidersList {
     }
 
     const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
-    const promises: Promise<ListItem[]>[] = []
-    this.providers.forEach(function (provider) {
+    const resultsArray: ListItem[][] = []
+    for (const provider of this.providers) {
       if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
-        promises.push(
-          new Promise<ListItem[]>(function (resolve) {
-            resolve(
-              provider.getIntentions({
-                textEditor,
-                bufferPosition,
-              })
-            )
-          }).then(function (results) {
-            if (atom.inDevMode()) {
-              validateSuggestions(results)
-            }
+        // TODO parallelize
+        // eslint-disable-next-line no-await-in-loop
+        const results = await provider.getIntentions({
+          textEditor,
+          bufferPosition,
+        })
+        if (atom.inDevMode()) {
+          validateSuggestions(results)
+        }
 
-            return results
-          })
-        )
+        resultsArray.push(results)
       }
-    })
-    const number = ++this.number
-    const results = (await Promise.all(promises))
+    }
+
+    const results = resultsArray
       .flat()
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
 
-    if (number !== this.number || results.length === 0) {
+    if (debounceNumber !== this.debounceNumber || results.length === 0) {
       // If has been executed one more time, ignore these results
       // Or we don't have any results
       return []
