@@ -19,7 +19,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "lib": ["ES2018", "dom"],
+    "lib": ["ES2019", "dom"],
     "target": "ES2018",
     "allowJs": true,
     "esModuleInterop": true,

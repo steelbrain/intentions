@@ -60,15 +60,12 @@ export class ProvidersHighlight {
       }
     })
     const number = ++this.number
-    const results = (await Promise.all(promises)).reduce(function (items, item) {
-      if (Array.isArray(item)) {
-        return items.concat(item)
-      }
+    const results = (await Promise.all(promises))
+      .flat()
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
 
-      return items
-    }, [])
-
-    if (number !== this.number || !results.length) {
+    if (number !== this.number || results.length === 0) {
       // If has been executed one more time, ignore these results
       // Or we just don't have any results
       return []
