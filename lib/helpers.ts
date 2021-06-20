@@ -1,6 +1,54 @@
-import type { ListItem } from "./types"
+import * as ValidateSuggestions from "./validate"
+import type { Point, Range, TextEditor } from "atom"
+import type { ListProvider, ListItem, HighlightProvider } from "./types"
 
 export const $class = "__$sb_intentions_class"
+
+export function scopesForBufferPosition(textEditor: TextEditor, bufferPosition: Point) {
+  return [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
+}
+
+export async function getIntentionsForBufferPosition(
+  provider: ListProvider,
+  bufferPosition: Point,
+  textEditor: TextEditor,
+  scopes: string[]
+) {
+  const providerScopes = provider.grammarScopes
+  if (scopes.some((scope) => providerScopes.includes(scope))) {
+    const results = await provider.getIntentions({
+      textEditor,
+      bufferPosition,
+    })
+    if (atom.inDevMode()) {
+      ValidateSuggestions.suggestionsList(results)
+    }
+
+    return results
+  }
+  return []
+}
+
+export async function getIntentionsForVisibleRange(
+  provider: HighlightProvider,
+  visibleRange: Range,
+  textEditor: TextEditor,
+  scopes: string[]
+) {
+  const providerScopes = provider.grammarScopes
+  if (scopes.some((scope) => providerScopes.includes(scope))) {
+    const results = await provider.getIntentions({
+      textEditor,
+      visibleRange,
+    })
+    if (atom.inDevMode()) {
+      ValidateSuggestions.suggestionsShow(results)
+    }
+
+    return results
+  }
+  return []
+}
 
 export function processListItems(suggestions: Array<ListItem>): Array<ListItem> {
   for (let i = 0, { length } = suggestions; i < length; ++i) {
@@ -37,4 +85,14 @@ export function showError(message: Error | string, detail?: string) {
     detail: detailShown,
     dismissable: true,
   })
+}
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export function flatObjectArray<T = any>(resultsArray: T[][]) {
+  return (
+    resultsArray
+      .flat()
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
+  )
 }

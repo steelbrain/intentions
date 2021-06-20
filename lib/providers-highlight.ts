@@ -1,11 +1,12 @@
 import type { TextEditor, Range, DisplayMarker } from "atom"
+import { flatObjectArray, getIntentionsForVisibleRange, scopesForBufferPosition } from "./helpers"
 
-import { provider as validateProvider, suggestionsShow as validateSuggestions } from "./validate"
+import { provider as validateProvider } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
 export class ProvidersHighlight {
-  number: number = 0
+  debounceNumber: number = 0
   providers = new Set<HighlightProvider>()
 
   addProvider(provider: HighlightProvider) {
@@ -26,64 +27,36 @@ export class ProvidersHighlight {
   }
 
   async trigger(textEditor: TextEditor): Promise<Array<HighlightItem>> {
-    const editorPath = textEditor.getPath()
-    const bufferPosition = textEditor.getCursorBufferPosition()
+    const debounceNumber = ++this.debounceNumber
 
+    const editorPath = textEditor.getPath()
     if (editorPath === undefined) {
       return []
     }
 
-    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()]
-    scopes.push("*")
+    const bufferPosition = textEditor.getCursorBufferPosition()
+
+    const scopes = scopesForBufferPosition(textEditor, bufferPosition)
+
     const visibleRange = { ...textEditor.getBuffer().getRange() } as Range
     // Setting this to infinity on purpose, cause the buffer position just marks visible column
     // according to element width
     visibleRange.end.column = Infinity
+
     const promises: Promise<HighlightItem[]>[] = []
-    this.providers.forEach(function (provider) {
-      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
-        promises.push(
-          new Promise<HighlightItem[]>(function (resolve) {
-            resolve(
-              provider.getIntentions({
-                textEditor,
-                visibleRange,
-              })
-            )
-          }).then(function (results) {
-            if (atom.inDevMode()) {
-              validateSuggestions(results)
-            }
+    for (const provider of this.providers) {
+      promises.push(getIntentionsForVisibleRange(provider, visibleRange, textEditor, scopes))
+    }
 
-            return results
-          })
-        )
-      }
-    })
-    const number = ++this.number
-    const results = (await Promise.all(promises)).reduce(function (items, item) {
-      if (Array.isArray(item)) {
-        return items.concat(item)
-      }
+    const resultsArray = await Promise.all(promises)
 
-      return items
-    }, [])
-
-    if (number !== this.number || !results.length) {
+    if (debounceNumber !== this.debounceNumber) {
       // If has been executed one more time, ignore these results
-      // Or we just don't have any results
       return []
     }
 
-    return results
+    return flatObjectArray<HighlightItem>(resultsArray)
   }
-
-  /* eslint-disable class-methods-use-this */
-  /** @deprecated Use the exported function */
-  paint(...args: Parameters<typeof paint>): ReturnType<typeof paint> {
-    return paint(...args)
-  }
-  /* eslint-enable class-methods-use-this */
 
   dispose() {
     this.providers.clear()

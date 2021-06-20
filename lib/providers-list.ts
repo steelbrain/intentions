@@ -1,11 +1,11 @@
 import type { TextEditor } from "atom"
 
-import { processListItems } from "./helpers"
-import { provider as validateProvider, suggestionsList as validateSuggestions } from "./validate"
+import { processListItems, getIntentionsForBufferPosition, flatObjectArray, scopesForBufferPosition } from "./helpers"
+import { provider as validateProvider } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
 export class ProvidersList {
-  number: number = 0
+  debounceNumber: number = 0
   providers = new Set<ListProvider>()
 
   addProvider(provider: ListProvider) {
@@ -26,52 +26,30 @@ export class ProvidersList {
   }
 
   async trigger(textEditor: TextEditor): Promise<Array<ListItem>> {
-    const editorPath = textEditor.getPath()
-    const bufferPosition = textEditor.getCursorBufferPosition()
+    const debounceNumber = ++this.debounceNumber
 
+    const editorPath = textEditor.getPath()
     if (editorPath === undefined) {
       return []
     }
 
-    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray()]
-    scopes.push("*")
+    const bufferPosition = textEditor.getCursorBufferPosition()
+
+    const scopes = scopesForBufferPosition(textEditor, bufferPosition)
+
     const promises: Promise<ListItem[]>[] = []
-    this.providers.forEach(function (provider) {
-      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
-        promises.push(
-          new Promise<ListItem[]>(function (resolve) {
-            resolve(
-              provider.getIntentions({
-                textEditor,
-                bufferPosition,
-              })
-            )
-          }).then(function (results) {
-            if (atom.inDevMode()) {
-              validateSuggestions(results)
-            }
+    for (const provider of this.providers) {
+      promises.push(getIntentionsForBufferPosition(provider, bufferPosition, textEditor, scopes))
+    }
 
-            return results
-          })
-        )
-      }
-    })
-    const number = ++this.number
-    const results = (await Promise.all(promises)).reduce(function (items, item) {
-      if (Array.isArray(item)) {
-        return items.concat(item)
-      }
+    const resultsArray = await Promise.all(promises)
 
-      return items
-    }, [])
-
-    if (number !== this.number || !results.length) {
+    if (debounceNumber !== this.debounceNumber) {
       // If has been executed one more time, ignore these results
-      // Or we don't have any results
       return []
     }
 
-    return processListItems(results)
+    return processListItems(flatObjectArray<ListItem>(resultsArray))
   }
 
   dispose() {
