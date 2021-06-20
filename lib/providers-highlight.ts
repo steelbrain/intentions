@@ -1,5 +1,5 @@
 import type { TextEditor, Range, DisplayMarker } from "atom"
-import { flatObjectArray, getIntentionsForVisibleRange } from "./helpers"
+import { flatObjectArray, getIntentionsForVisibleRange, scopesForBufferPosition } from "./helpers"
 
 import { provider as validateProvider } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
@@ -30,13 +30,13 @@ export class ProvidersHighlight {
     const debounceNumber = ++this.debounceNumber
 
     const editorPath = textEditor.getPath()
-    const bufferPosition = textEditor.getCursorBufferPosition()
-
     if (editorPath === undefined) {
       return []
     }
 
-    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
+    const bufferPosition = textEditor.getCursorBufferPosition()
+
+    const scopes = scopesForBufferPosition(textEditor, bufferPosition)
 
     const visibleRange = { ...textEditor.getBuffer().getRange() } as Range
     // Setting this to infinity on purpose, cause the buffer position just marks visible column

@@ -1,6 +1,6 @@
 import type { TextEditor } from "atom"
 
-import { processListItems, getIntentionsForBufferPosition, flatObjectArray } from "./helpers"
+import { processListItems, getIntentionsForBufferPosition, flatObjectArray, scopesForBufferPosition } from "./helpers"
 import { provider as validateProvider } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
@@ -29,13 +29,14 @@ export class ProvidersList {
     const debounceNumber = ++this.debounceNumber
 
     const editorPath = textEditor.getPath()
-    const bufferPosition = textEditor.getCursorBufferPosition()
-
     if (editorPath === undefined) {
       return []
     }
 
-    const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
+    const bufferPosition = textEditor.getCursorBufferPosition()
+
+    const scopes = scopesForBufferPosition(textEditor, bufferPosition)
+
     const promises: Promise<ListItem[]>[] = []
     for (const provider of this.providers) {
       promises.push(getIntentionsForBufferPosition(provider, bufferPosition, textEditor, scopes))

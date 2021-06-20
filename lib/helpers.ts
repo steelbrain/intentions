@@ -4,6 +4,10 @@ import type { ListProvider, ListItem, HighlightProvider } from "./types"
 
 export const $class = "__$sb_intentions_class"
 
+export function scopesForBufferPosition(textEditor: TextEditor, bufferPosition: Point) {
+  return [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
+}
+
 export async function getIntentionsForBufferPosition(
   provider: ListProvider,
   bufferPosition: Point,
