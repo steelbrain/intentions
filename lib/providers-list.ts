@@ -1,6 +1,6 @@
 import type { TextEditor } from "atom"
 
-import { processListItems, getIntentionsForBufferPosition } from "./helpers"
+import { processListItems, getIntentionsForBufferPosition, flatObjectArray } from "./helpers"
 import { provider as validateProvider } from "./validate"
 import type { ListProvider, ListItem } from "./types"
 
@@ -48,12 +48,7 @@ export class ProvidersList {
       return []
     }
 
-    const results = (resultsArray)
-      .flat()
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
-
-    return processListItems(results)
+    return processListItems(flatObjectArray<ListItem>(resultsArray))
   }
 
   dispose() {

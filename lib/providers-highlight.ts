@@ -1,5 +1,5 @@
 import type { TextEditor, Range, DisplayMarker } from "atom"
-import { getIntentionsForVisibleRange } from "./helpers"
+import { flatObjectArray, getIntentionsForVisibleRange } from "./helpers"
 
 import { provider as validateProvider } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
@@ -55,12 +55,7 @@ export class ProvidersHighlight {
       return []
     }
 
-    const results = (resultsArray)
-      .flat()
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
-
-    return results
+    return flatObjectArray<HighlightItem>(resultsArray)
   }
 
   /* eslint-disable class-methods-use-this */

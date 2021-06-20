@@ -80,3 +80,13 @@ export function showError(message: Error | string, detail?: string) {
     dismissable: true,
   })
 }
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export function flatObjectArray<T = any>(resultsArray: T[][]) {
+  return (
+    resultsArray
+      .flat()
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
+  )
+}
