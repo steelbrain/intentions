@@ -10,7 +10,8 @@ export async function getIntentionsForBufferPosition(
   textEditor: TextEditor,
   scopes: string[]
 ) {
-  if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
+  const providerScopes = provider.grammarScopes
+  if (scopes.some((scope) => providerScopes.includes(scope))) {
     const results = await provider.getIntentions({
       textEditor,
       bufferPosition,
@@ -30,7 +31,8 @@ export async function getIntentionsForVisibleRange(
   textEditor: TextEditor,
   scopes: string[]
 ) {
-  if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
+  const providerScopes = provider.grammarScopes
+  if (scopes.some((scope) => providerScopes.includes(scope))) {
     const results = await provider.getIntentions({
       textEditor,
       visibleRange,
