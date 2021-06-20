@@ -48,15 +48,17 @@ export class ProvidersHighlight {
       promises.push(getIntentionsForVisibleRange(provider, visibleRange, textEditor, scopes))
     }
 
-    const results = (await Promise.all(promises))
-      .flat()
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
+    const resultsArray = await Promise.all(promises)
 
     if (debounceNumber !== this.debounceNumber) {
       // If has been executed one more time, ignore these results
       return []
     }
+
+    const results = (resultsArray)
+      .flat()
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
 
     return results
   }
