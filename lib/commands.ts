@@ -95,10 +95,10 @@ export class Commands {
             return
           }
 
-          const { keyCode } = e.originalEvent
+          const { code } = e.originalEvent // code will be ControlLeft or ControlRight
           subscriptions.add(
             disposableEvent(document.body as unknown as TargetWithAddEventListener, "keyup", (upE: KeyboardEvent) => {
-              if (upE.keyCode !== keyCode) {
+              if (upE.code !== code) {
                 return
               }
 

@@ -215,7 +215,7 @@ describe("Commands", function () {
         await wait(10)
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(0)
-        dispatchEventOnBody(getKeyboardEvent("keyup", 1))
+        dispatchEventOnBody(getKeyboardEvent("keyup", "ShiftLeft"))
         await wait(10)
         expect(timesShow).toBe(1)
         expect(timesHide).toBe(0)
