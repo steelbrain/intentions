@@ -16,12 +16,7 @@ export type HighlightItem = {
   // From providers
   range: Range
   class?: string
-  created: (parameters: {
-    marker: DisplayMarker
-    element: HTMLElement
-    textEditor: TextEditor
-    matchedText: string
-  }) => void
+  created: (parameters: { marker: DisplayMarker; textEditor: TextEditor; matchedText: string }) => void
 }
 export type ListProvider = {
   grammarScopes: Array<string>

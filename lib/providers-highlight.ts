@@ -2,7 +2,6 @@ import type { TextEditor, Range, DisplayMarker } from "atom"
 import { flatObjectArray, getIntentionsForVisibleRange, scopesForBufferPosition } from "./helpers"
 
 import { provider as validateProvider } from "./validate"
-import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
 export class ProvidersHighlight {
@@ -69,20 +68,14 @@ export function paint(textEditor: TextEditor, intentions: Array<HighlightItem>):
   for (const intention of intentions) {
     const matchedText = textEditor.getTextInBufferRange(intention.range)
     const marker = textEditor.markBufferRange(intention.range)
-    const element = createElement(matchedText.length)
     intention.created({
       textEditor,
-      element,
       marker,
       matchedText,
     })
     textEditor.decorateMarker(marker, {
-      type: "overlay",
-      position: "tail",
-      item: element,
-    })
-    marker.onDidChange(function ({ newHeadBufferPosition: start, oldTailBufferPosition: end }) {
-      element.textContent = PADDING_CHARACTER.repeat(textEditor.getTextInBufferRange([start, end]).length)
+      type: "highlight",
+      class: "intentions-inline",
     })
     markers.push(marker)
   }

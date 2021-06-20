@@ -23,10 +23,10 @@
 }
 
 // Inline highlight
+atom-text-editor .highlight.intentions-inline > .region {
+  border-bottom: 1px solid @syntax-text-color;
+  /* Avoid being obscured by the datatip highlight */
+  z-index: 1;
 
-.intentions-inline {
-  pointer-events: none; // allow selecting the underlying text
-  position: absolute;
-  margin-top: 0.1em;
-  text-decoration: underline;
+  // pointer-events: none; // allow selecting the underlying text
 }
