@@ -46,9 +46,8 @@ export class ProvidersList {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
 
-    if (debounceNumber !== this.debounceNumber || results.length === 0) {
+    if (debounceNumber !== this.debounceNumber) {
       // If has been executed one more time, ignore these results
-      // Or we don't have any results
       return []
     }
 
