@@ -1,6 +1,6 @@
-import { suggestionsList as validateSuggestions } from "./validate"
-import type { Point, TextEditor } from "atom"
-import type { ListProvider, ListItem } from "./types"
+import * as ValidateSuggestions from "./validate"
+import type { Point, Range, TextEditor } from "atom"
+import type { ListProvider, ListItem, HighlightProvider } from "./types"
 
 export const $class = "__$sb_intentions_class"
 
@@ -16,7 +16,27 @@ export async function getIntentionsForBufferPosition(
       bufferPosition,
     })
     if (atom.inDevMode()) {
-      validateSuggestions(results)
+      ValidateSuggestions.suggestionsList(results)
+    }
+
+    return results
+  }
+  return []
+}
+
+export async function getIntentionsForVisibleRange(
+  provider: HighlightProvider,
+  visibleRange: Range,
+  textEditor: TextEditor,
+  scopes: string[]
+) {
+  if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
+    const results = await provider.getIntentions({
+      textEditor,
+      visibleRange,
+    })
+    if (atom.inDevMode()) {
+      ValidateSuggestions.suggestionsShow(results)
     }
 
     return results

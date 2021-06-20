@@ -1,6 +1,7 @@
 import type { TextEditor, Range, DisplayMarker } from "atom"
+import { getIntentionsForVisibleRange } from "./helpers"
 
-import { provider as validateProvider, suggestionsShow as validateSuggestions } from "./validate"
+import { provider as validateProvider } from "./validate"
 import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
@@ -36,27 +37,18 @@ export class ProvidersHighlight {
     }
 
     const scopes = [...textEditor.scopeDescriptorForBufferPosition(bufferPosition).getScopesArray(), "*"]
+
     const visibleRange = { ...textEditor.getBuffer().getRange() } as Range
     // Setting this to infinity on purpose, cause the buffer position just marks visible column
     // according to element width
     visibleRange.end.column = Infinity
-    const resultsArray: HighlightItem[][] = []
-    for (const provider of this.providers) {
-      if (scopes.some((scope) => provider.grammarScopes.includes(scope))) {
-        // TODO parallelize
-        // eslint-disable-next-line no-await-in-loop
-        const results = await provider.getIntentions({
-          textEditor,
-          visibleRange,
-        })
-        if (atom.inDevMode()) {
-          validateSuggestions(results)
-        }
 
-        resultsArray.push(results)
-      }
+    const promises: Promise<HighlightItem[]>[] = []
+    for (const provider of this.providers) {
+      promises.push(getIntentionsForVisibleRange(provider, visibleRange, textEditor, scopes))
     }
-    const results = resultsArray
+
+    const results = (await Promise.all(promises))
       .flat()
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
