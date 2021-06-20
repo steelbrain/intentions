@@ -15,7 +15,7 @@ export async function getIntentionsForBufferPosition(
   scopes: string[]
 ) {
   const providerScopes = provider.grammarScopes
-  if (scopes.some((scope) => providerScopes.includes(scope))) {
+  if (hasOverlap(scopes, providerScopes)) {
     const results = await provider.getIntentions({
       textEditor,
       bufferPosition,
@@ -36,7 +36,7 @@ export async function getIntentionsForVisibleRange(
   scopes: string[]
 ) {
   const providerScopes = provider.grammarScopes
-  if (scopes.some((scope) => providerScopes.includes(scope))) {
+  if (hasOverlap(scopes, providerScopes)) {
     const results = await provider.getIntentions({
       textEditor,
       visibleRange,
@@ -95,4 +95,8 @@ export function flatObjectArray<T = any>(resultsArray: T[][]) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((result) => result !== null && typeof result === "object") // TODO is this really needed?
   )
+}
+
+function hasOverlap<T>(arr1: T[], arr2: T[]) {
+  return arr1.some((elm) => arr2.includes(elm))
 }
