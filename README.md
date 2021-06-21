@@ -25,8 +25,6 @@ The second type of API is highlight API. It allows packages to mark buffer range
 It can be jump-to-declaration click, show type on mouse move and show color as underline.
 Here is what it looks like
 
-![Intentions Highlight API](https://cloud.githubusercontent.com/assets/4278113/12878032/0f915ef2-ce3f-11e5-833e-be231abeda12.png)
-
 You can find docs about both of these in [Intentions Wiki](https://github.com/steelbrain/intentions/wiki/Intentions-API)
 
 #### License
