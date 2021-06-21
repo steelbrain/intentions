@@ -14,7 +14,7 @@ export type ListItem = {
 export type HighlightItem = {
   // From providers
   range: Range
-  created: (parameters: { marker: DisplayMarker; textEditor: TextEditor; matchedText: string }) => void
+  created?: (parameters: { marker: DisplayMarker; textEditor: TextEditor; matchedText: string }) => void
 }
 
 export type ListProvider = {

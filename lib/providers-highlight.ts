@@ -68,7 +68,7 @@ export function paint(textEditor: TextEditor, intentions: Array<HighlightItem>):
   for (const intention of intentions) {
     const matchedText = textEditor.getTextInBufferRange(intention.range)
     const marker = markerLayer.markBufferRange(intention.range)
-    intention.created({
+    intention.created?.({
       textEditor,
       marker,
       matchedText,
