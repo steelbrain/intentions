@@ -20,7 +20,7 @@ export async function getIntentionsForBufferPosition(
       textEditor,
       bufferPosition,
     })
-    if (atom.inDevMode()) {
+    if (atom.inSpecMode()) {
       ValidateSuggestions.suggestionsList(results)
     }
 
@@ -41,7 +41,7 @@ export async function getIntentionsForVisibleRange(
       textEditor,
       visibleRange,
     })
-    if (atom.inDevMode()) {
+    if (atom.inSpecMode()) {
       ValidateSuggestions.suggestionsShow(results)
     }
 
