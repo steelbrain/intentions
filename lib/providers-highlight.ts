@@ -1,8 +1,7 @@
-import type { TextEditor, Range, DisplayMarker } from "atom"
+import type { TextEditor, Range } from "atom"
 import { flatObjectArray, getIntentionsForVisibleRange, scopesForBufferPosition } from "./helpers"
 
 import { provider as validateProvider } from "./validate"
-import { create as createElement, PADDING_CHARACTER } from "./elements/highlight"
 import type { HighlightProvider, HighlightItem } from "./types"
 
 export class ProvidersHighlight {
@@ -64,36 +63,25 @@ export class ProvidersHighlight {
 }
 
 export function paint(textEditor: TextEditor, intentions: Array<HighlightItem>): () => void {
-  const markers: DisplayMarker[] = []
+  const markerLayer = textEditor.addMarkerLayer()
 
   for (const intention of intentions) {
     const matchedText = textEditor.getTextInBufferRange(intention.range)
-    const marker = textEditor.markBufferRange(intention.range)
-    const element = createElement(matchedText.length)
-    intention.created({
+    const marker = markerLayer.markBufferRange(intention.range)
+    intention.created?.({
       textEditor,
-      element,
       marker,
       matchedText,
     })
-    textEditor.decorateMarker(marker, {
-      type: "overlay",
-      position: "tail",
-      item: element,
-    })
-    marker.onDidChange(function ({ newHeadBufferPosition: start, oldTailBufferPosition: end }) {
-      element.textContent = PADDING_CHARACTER.repeat(textEditor.getTextInBufferRange([start, end]).length)
-    })
-    markers.push(marker)
   }
 
-  return function () {
-    markers.forEach(function (marker) {
-      try {
-        marker.destroy()
-      } catch (_) {
-        /* No Op */
-      }
-    })
+  textEditor.decorateMarkerLayer(markerLayer, {
+    type: "highlight",
+    class: "intentions-inline",
+  })
+
+  return () => {
+    markerLayer.clear()
+    markerLayer.destroy()
   }
 }

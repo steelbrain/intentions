@@ -49,8 +49,6 @@ export function suggestionsShow(suggestions: Array<HighlightItem>): Array<Highli
 
       if (typeof suggestion.range !== "object") {
         message = "Invalid or no range found on intention"
-      } else if (suggestion.class !== undefined && typeof suggestion.class !== "string") {
-        message = "Invalid class found on intention"
       } else if (typeof suggestion.created !== "function") {
         message = "Invalid or no created found on intention"
       }

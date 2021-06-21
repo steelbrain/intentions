@@ -40,7 +40,8 @@
     },
     "intentions:highlight": {
       "versions": {
-        "^1.0.0": "consumeHighlightIntentions"
+        "^1.0.0": "consumeHighlightIntentions",
+        "^2.0.0": "consumeHighlightIntentions"
       }
     }
   },
