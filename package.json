@@ -50,7 +50,7 @@
     "test.format": "prettier --check .",
     "lint": "eslint . --fix",
     "test.lint": "eslint .",
-    "test": "npm run build.unit && npm run build && npm run test.only",
+    "test": "npm run build.unit && npm run test.only",
     "test.only": "atom --test spec",
     "clean": "shx rm -rf ./dist",
     "types": "tsc -p ./lib/tsconfig.json --noEmit",
