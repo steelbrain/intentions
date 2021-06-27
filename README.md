@@ -11,6 +11,14 @@ Intentions is a base package that provides an easy-to-use API to show intentions
 
 ![intentions-list](https://user-images.githubusercontent.com/16418197/122294624-dd304100-cebd-11eb-9232-d015cde1516f.gif)
 
+[`vim-mode-plus`](https://github.com/t9md/atom-vim-mode-plus/) users can add these keymap entries to use <kbd>j</kbd> and <kbd>k</kbd> to navigate the actions list
+```cson
+'atom-text-editor.intentions-list:not([mini])':
+  'enter': 'intentions:confirm'
+  'j': 'core:move-up'
+  'k': 'core:move-down'
+```
+
 **Note**: This package does not work on older Atoms. You should install the **latest version of Atom** from:
 https://atom.io/
 
